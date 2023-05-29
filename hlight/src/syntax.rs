@@ -1,10 +1,14 @@
 use crate::{resource::HighLightRes, theme::READ_DUMP_DATA_ERR};
 use once_cell::sync::OnceCell;
+
+#[cfg(feature = "preset-syntax-set")]
 use syntect::dumps;
+
 pub use syntect::parsing::{SyntaxReference, SyntaxSet};
 
 type OnceSyntax = OnceCell<&'static SyntaxReference>;
 
+#[cfg(feature = "preset-syntax-set")]
 const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/assets/theme-syntax-set/syntax-set.packdump"
@@ -27,8 +31,16 @@ const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
 /// let set = load_syntax_set(Some(SYNTAXES));
 /// ```
 pub fn load_syntax_set(set: Option<&[u8]>) -> SyntaxSet {
-    dumps::from_uncompressed_data(set.unwrap_or(SUBLIME_SYNTAXES))
-        .expect(READ_DUMP_DATA_ERR)
+    let msg = READ_DUMP_DATA_ERR;
+
+    match set {
+        Some(x) => dumps::from_uncompressed_data(x).expect(msg),
+        #[cfg(feature = "preset-syntax-set")]
+        _ => dumps::from_uncompressed_data(set.unwrap_or(SUBLIME_SYNTAXES))
+            .expect(msg),
+        #[allow(unreachable_patterns)]
+        _ => SyntaxSet::default(),
+    }
 }
 
 impl<'name> HighLightRes<'name> {

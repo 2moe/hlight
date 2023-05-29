@@ -1,9 +1,10 @@
-use crate::theme::monokai_theme_name;
 use getset::{Getters, MutGetters};
 use once_cell::sync::OnceCell;
 use std::borrow::Cow;
 pub use syntect::{dumps, highlighting::ThemeSet};
 use syntect::{highlighting::Theme, parsing::SyntaxSet};
+
+use crate::theme::theme_monokai;
 
 #[derive(Getters, MutGetters, Debug)]
 #[getset(get = "pub with_prefix", get_mut = "pub with_prefix")]
@@ -39,7 +40,7 @@ impl<'name> HighLightRes<'name> {
 impl<'name> Default for HighLightRes<'name> {
     fn default() -> Self {
         Self {
-            name: Cow::from(monokai_theme_name()),
+            name: theme_monokai(),
             theme: OnceCell::new(),
             syntax_set: Self::static_syntax_set(),
             theme_set: Self::static_theme_set(),

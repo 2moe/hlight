@@ -1,5 +1,0 @@
-[[tree]]
-name = "tomlyre-img"
-remote = "tomlyre"
-# ref: branch-name, commit-id or tag.
-ref = "img"

@@ -11,9 +11,9 @@ Dedicated to delivering exceptional syntax highlighting capabilities.
 
 ## Usage
 
-[hlight::readme](hlight/Readme.md)
+[hlight/readme](hlight/Readme.md)
 
-[hlight-dump::readme](hlight-dump/Readme.md)
+[hlight-dump/readme](hlight-dump/Readme.md)
 
 ## Preview
 

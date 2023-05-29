@@ -13,6 +13,13 @@ description = "This library is dedicated to delivering exceptional syntax highli
 [lib]
 path = "src/lib.rs"
 
+
+[features]
+default = ["preset-syntax-set", "preset-theme-set"]
+preset-syntax-set = []
+preset-theme-set = []
+# log = ["dep:log"]
+
 [dependencies]
 getset = "0.1.2"
 log = "0.4.18"
