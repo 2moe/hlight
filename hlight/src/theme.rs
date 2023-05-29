@@ -8,7 +8,7 @@ use crate::resource::HighLightRes;
 
 const THEME_SET: &[u8] = include_bytes!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/assets/syntect/theme-set.packdump"
+    "/assets/theme-syntax-set/theme-set.packdump"
 ));
 
 pub const READ_DUMP_DATA_ERR: &str = "Failed to read dump data";

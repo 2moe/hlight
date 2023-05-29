@@ -7,7 +7,7 @@ type OnceSyntax = OnceCell<&'static SyntaxReference>;
 
 const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/assets/syntect/syntax-set.packdump"
+    "/assets/theme-syntax-set/syntax-set.packdump"
 ));
 
 /// Loads a set of syntaxes.

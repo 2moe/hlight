@@ -9,9 +9,6 @@ repository = "https://github.com/2moe/hlight"
 license = "Apache-2.0"
 description = "Dump the theme/syntax set of an old version of Sublime as binary data"
 
-[[bin]]
-# doc = false
-path = "src/main.rs"
 
 [dependencies]
 getset = "0.1.2"
