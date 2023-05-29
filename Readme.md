@@ -19,42 +19,42 @@ Dedicated to delivering exceptional syntax highlighting capabilities.
 
 <table>
   <tr>
-    <td><img src="assets/tomlyre/theme/dracula.png" alt="dracula"></td>
-    <td><img src="assets/tomlyre/theme/monokai-bright.png" alt="monokai-bright"></td>
+    <td><img src="assets/tomlyre-img/theme/dracula.png" alt="dracula"></td>
+    <td><img src="assets/tomlyre-img/theme/monokai-bright.png" alt="monokai-bright"></td>
   </tr>
 </table>
 
 <table>
   <tr>
-      <td><img src="assets/tomlyre/theme/monokai.png" alt="monokai"></td>
-      <td><img src="assets/tomlyre/theme/monokai-light.png" alt="monokai-light"></td>
+      <td><img src="assets/tomlyre-img/theme/monokai.png" alt="monokai"></td>
+      <td><img src="assets/tomlyre-img/theme/monokai-light.png" alt="monokai-light"></td>
   </tr>
 </table>
 
 <table>
   <tr>
-      <td><img src="assets/tomlyre/theme/onedark.png" alt="onedark"></td>
-      <td><img src="assets/tomlyre/theme/one-dark-tomorrow.png" alt="one-dark-tomorrow"></td>
+      <td><img src="assets/tomlyre-img/theme/onedark.png" alt="onedark"></td>
+      <td><img src="assets/tomlyre-img/theme/one-dark-tomorrow.png" alt="one-dark-tomorrow"></td>
   </tr>
 </table>
 
 <table>
   <tr>
-      <td><img src="assets/tomlyre/theme/one-half-dark.png" alt="one-half-dark"></td>
-      <td><img src="assets/tomlyre/theme/one-half-light.png" alt="one-half-light"></td>
+      <td><img src="assets/tomlyre-img/theme/one-half-dark.png" alt="one-half-dark"></td>
+      <td><img src="assets/tomlyre-img/theme/one-half-light.png" alt="one-half-light"></td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <td><img src="assets/tomlyre/theme/widget-one-dark.png" alt="widget-one-dark"></td>
-    <td><img src="assets/tomlyre/theme/ayu-light.png" alt="ayu-light.png"></td>
+    <td><img src="assets/tomlyre-img/theme/widget-one-dark.png" alt="widget-one-dark"></td>
+    <td><img src="assets/tomlyre-img/theme/ayu-light.png" alt="ayu-light.png"></td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <td><img src="assets/tomlyre/theme/ayu-dark.png" alt="ayu-dark"></td>
-    <td><img src="assets/tomlyre/theme/ayu-migrage.png" alt="ayu-migrage"></td>
+    <td><img src="assets/tomlyre-img/theme/ayu-dark.png" alt="ayu-dark"></td>
+    <td><img src="assets/tomlyre-img/theme/ayu-migrage.png" alt="ayu-migrage"></td>
   </tr>
 </table>
