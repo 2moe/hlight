@@ -1,0 +1,24 @@
+[package]
+name = "hlight"
+version = "0.0.0"
+edition = "2021"
+authors = ["Moe <m@tmoe.me>"]
+keywords = ["syntax", "highlighting"]
+categories = ["text-processing"]
+readme = "Readme.md"
+repository = "https://github.com/2moe/hlight"
+license = "Apache-2.0"
+description = "This library is dedicated to delivering exceptional syntax highlighting capabilities."
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+getset = "0.1.2"
+log = "0.4.18"
+once_cell = "1.17.1"
+
+[dependencies.syntect]
+version = "5.0.0"
+default-features = false
+features = ["parsing", "regex-fancy"]
