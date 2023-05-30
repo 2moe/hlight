@@ -1,6 +1,8 @@
-# hlight
+# HLight
 
-[![crates.io](https://img.shields.io/crates/v/hlight?label=hlight%28lib%29)](https://crates.io/crates/hlight)
+[![hlight.crate](https://img.shields.io/crates/v/hlight?label=hlight%28lib%29)](https://crates.io/crates/hlight)
+
+[![hlight-dump.crate](https://img.shields.io/crates/v/hlight-dump?label=hlight-dump%28bin%29)](https://crates.io/crates/hlight-dump)
 
 [![Documentation](https://docs.rs/hlight/badge.svg)](https://docs.rs/hlight) [![Apache-2 licensed](https://img.shields.io/crates/l/hlight.svg)](./License)
 
