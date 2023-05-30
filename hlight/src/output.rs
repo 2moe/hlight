@@ -12,7 +12,7 @@ use syntect::{
 ///
 /// ```no_run
 /// use hlight::HighLightRes;
-/// use hlight::get_syntax_highlight;
+/// use hlight::gen_syntax_highlight;
 /// use std::fs::File;
 ///
 /// let s = "
@@ -20,11 +20,13 @@ use syntect::{
 /// enabled = false
 /// float = 314e-2
 /// ";
+///
 /// let res = HighLightRes::default().with_background(false);
 /// let mut file = File::create("test.txt").expect("Failed to create test.txt");
-/// get_syntax_highlight("toml", s, Some(&res), Some(&mut file)).expect("Failed to get syntax highlighting");
+///
+/// gen_syntax_highlight("toml", s, Some(&res), Some(&mut file)).expect("Failed to get syntax highlighting");
 /// ```
-pub fn get_syntax_highlight(
+pub fn gen_syntax_highlight(
     dst_fmt: &str,
     contents: &str,
     style: Option<&HighLightRes>,
@@ -113,7 +115,7 @@ mod tests {
     #[test]
     fn print_highlighted_text() -> io::Result<()> {
         let res = HighLightRes::default();
-        get_syntax_highlight("toml", S, Some(&res), None)
+        gen_syntax_highlight("toml", S, Some(&res), None)
     }
 
     #[test]
@@ -121,7 +123,7 @@ mod tests {
     fn write_to_file() -> io::Result<()> {
         let res = HighLightRes::default().with_background(false);
         let mut file = File::create("/tmp/test.txt")?;
-        get_syntax_highlight("toml", S, Some(&res), Some(&mut file))
+        gen_syntax_highlight("toml", S, Some(&res), Some(&mut file))
     }
 
     #[test]
@@ -148,6 +150,32 @@ mod tests {
         "#;
 
         let res = HighLightRes::default().with_background(false);
-        get_syntax_highlight("pwsh", s, Some(&res), None)
+        gen_syntax_highlight("pwsh", s, Some(&res), None)
+    }
+
+    #[test]
+    fn zsh_high_light() -> io::Result<()> {
+        let s = r#"
+        #compdef tomlyre
+
+        autoload -U is-at-least
+        
+        _tomlyre() {
+            typeset -A opt_args
+            typeset -a _arguments_options
+            local ret=1
+        
+            if is-at-least 5.2; then
+                _arguments_options=(-s -S -C)
+            else
+                _arguments_options=(-s -C)
+            fi
+        
+            local context curcontext="$curcontext" state line
+            _arguments "${_arguments_options[@]}" \
+        "#;
+
+        let res = HighLightRes::default().with_background(true);
+        gen_syntax_highlight("pwsh", s, Some(&res), None)
     }
 }

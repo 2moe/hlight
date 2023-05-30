@@ -1,10 +1,14 @@
 use crate::{resource::HighLightRes, theme::READ_DUMP_DATA_ERR};
 use once_cell::sync::OnceCell;
+
+#[cfg(feature = "preset-syntax-set")]
 use syntect::dumps;
+
 pub use syntect::parsing::{SyntaxReference, SyntaxSet};
 
 type OnceSyntax = OnceCell<&'static SyntaxReference>;
 
+#[cfg(feature = "preset-syntax-set")]
 const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/assets/theme-syntax-set/syntax-set.packdump"
@@ -27,12 +31,38 @@ const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
 /// let set = load_syntax_set(Some(SYNTAXES));
 /// ```
 pub fn load_syntax_set(set: Option<&[u8]>) -> SyntaxSet {
-    dumps::from_uncompressed_data(set.unwrap_or(SUBLIME_SYNTAXES))
-        .expect(READ_DUMP_DATA_ERR)
+    let msg = READ_DUMP_DATA_ERR;
+
+    match set {
+        Some(x) => dumps::from_uncompressed_data(x).expect(msg),
+        #[cfg(feature = "preset-syntax-set")]
+        _ => dumps::from_uncompressed_data(set.unwrap_or(SUBLIME_SYNTAXES))
+            .expect(msg),
+        #[allow(unreachable_patterns)]
+        _ => SyntaxSet::default(),
+    }
 }
 
 impl<'name> HighLightRes<'name> {
     /// This is the default syntax set.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use hlight::HighLightRes;
+    ///
+    /// let set = HighLightRes::static_syntax_set();
+    ///
+    /// set.syntaxes()
+    ///     .iter()
+    ///     .map(|x| (&x.name, &x.file_extensions))
+    ///     .for_each(|(name, ext)| {
+    ///         println!(
+    ///         "name: {name}\n\
+    ///         ext:{ext:?}\n---"
+    ///         )
+    ///     });
+    /// ```
     pub fn static_syntax_set() -> &'static SyntaxSet {
         static S: OnceCell<SyntaxSet> = OnceCell::new();
         S.get_or_init(|| load_syntax_set(None))
@@ -68,20 +98,23 @@ pub fn match_static_syntax(
 
 /// Finds and returns the appropriate syntax highlighting definition from a `SyntaxSet` based on a given destination format. If not found, it will fallback to json.
 pub(crate) fn find_syntax<'a>(
-    syntax_set: &'a SyntaxSet,
+    set: &'a SyntaxSet,
     dst_fmt: &str,
 ) -> &'a SyntaxReference {
-    syntax_set
-        .find_syntax_by_name(dst_fmt)
+    set.find_syntax_by_extension(dst_fmt)
         .unwrap_or_else(|| {
-            let to_json = || syntax_set.find_syntax_by_extension("json");
-            match dst_fmt {
-                "sexp" | "lexpr" => syntax_set
-                    .find_syntax_by_extension("lisp")
-                    .or_else(to_json),
-                _ => to_json(),
-            }
-            .unwrap_or_else(|| syntax_set.find_syntax_plain_text())
+            set.find_syntax_by_name(dst_fmt)
+                .unwrap_or_else(|| {
+                    let to_json = || set.find_syntax_by_extension("json");
+
+                    match dst_fmt {
+                        "sexp" | "lexpr" => set
+                            .find_syntax_by_extension("lisp")
+                            .or_else(to_json),
+                        _ => to_json(),
+                    }
+                    .unwrap_or_else(|| set.find_syntax_plain_text())
+                })
         })
 }
 
@@ -97,10 +130,7 @@ pub(crate) fn find_syntax<'a>(
 /// let set = HighLightRes::static_syntax_set();
 /// let syntax = find_syntax_name(set, "Markdown");
 /// ```
-pub fn find_syntax_by_name<'a>(
-    set: &'a SyntaxSet,
-    name: &str,
-) -> &'a SyntaxReference {
+pub fn find_syntax_name<'a>(set: &'a SyntaxSet, name: &str) -> &'a SyntaxReference {
     set.find_syntax_by_name(name)
         .unwrap_or_else(|| {
             set.find_syntax_by_extension(name)
@@ -113,25 +143,45 @@ pub fn find_syntax_by_name<'a>(
 //
 fn get_markdown(set: &'static SyntaxSet) -> &'static SyntaxReference {
     static S: OnceSyntax = OnceCell::new();
-    S.get_or_init(|| find_syntax_by_name(set, "Markdown"))
+    S.get_or_init(|| find_syntax_name(set, "Markdown"))
 }
 
 fn get_json(set: &'static SyntaxSet) -> &'static SyntaxReference {
     static S: OnceSyntax = OnceCell::new();
-    S.get_or_init(|| find_syntax_by_name(set, "JSON"))
+    S.get_or_init(|| find_syntax_name(set, "JSON"))
 }
 
 fn get_yaml(set: &'static SyntaxSet) -> &'static SyntaxReference {
     static S: OnceSyntax = OnceCell::new();
-    S.get_or_init(|| find_syntax_by_name(set, "YAML"))
+    S.get_or_init(|| find_syntax_name(set, "YAML"))
 }
 
 fn get_toml(set: &'static SyntaxSet) -> &'static SyntaxReference {
     static S: OnceSyntax = OnceCell::new();
-    S.get_or_init(|| find_syntax_by_name(set, "TOML"))
+    S.get_or_init(|| find_syntax_name(set, "TOML"))
 }
 
 fn get_pwsh(set: &'static SyntaxSet) -> &'static SyntaxReference {
     static S: OnceSyntax = OnceCell::new();
-    S.get_or_init(|| find_syntax_by_name(set, "PowerShell"))
+    S.get_or_init(|| find_syntax_name(set, "PowerShell"))
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::HighLightRes;
+
+    #[test]
+    fn static_set() {
+        let set = HighLightRes::static_syntax_set();
+
+        set.syntaxes()
+            .iter()
+            .map(|x| (&x.name, &x.file_extensions))
+            .for_each(|(name, ext)| {
+                println!(
+                    "name: {name}\n\
+                    ext:{ext:?}\n---"
+                )
+            });
+    }
 }

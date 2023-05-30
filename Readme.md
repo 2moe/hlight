@@ -1,6 +1,8 @@
-# hlight
+# HLight
 
-[![crates.io](https://img.shields.io/crates/v/hlight?label=hlight%28lib%29)](https://crates.io/crates/hlight)
+[![hlight.crate](https://img.shields.io/crates/v/hlight?label=hlight%28lib%29)](https://crates.io/crates/hlight)
+
+[![hlight-dump.crate](https://img.shields.io/crates/v/hlight-dump?label=hlight-dump%28bin%29)](https://crates.io/crates/hlight-dump)
 
 [![Documentation](https://docs.rs/hlight/badge.svg)](https://docs.rs/hlight) [![Apache-2 licensed](https://img.shields.io/crates/l/hlight.svg)](./License)
 
@@ -11,9 +13,9 @@ Dedicated to delivering exceptional syntax highlighting capabilities.
 
 ## Usage
 
-[hlight::readme](hlight/Readme.md)
+[hlight/readme](hlight/Readme.md)
 
-[hlight-dump::readme](hlight-dump/Readme.md)
+[hlight-dump/readme](hlight-dump/Readme.md)
 
 ## Preview
 

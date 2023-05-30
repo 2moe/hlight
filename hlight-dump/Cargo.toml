@@ -9,13 +9,20 @@ repository = "https://github.com/2moe/hlight"
 license = "Apache-2.0"
 description = "Dump the theme/syntax set of an old version of Sublime as binary data"
 
-
 [dependencies]
+anyhow = "1.0.71"
 getset = "0.1.2"
 log = "0.4.18"
-once_cell = "1.17.1"
+once_cell = "1.17.2"
+serde = "1.0.163"
+clap_complete = "4.3.0"
+env_logger = { version = "0.10.0", default-features = false, features = ["regex", "auto-color"] }
 
 [dependencies.syntect]
 version = "5.0.0"
 default-features = false
-features = ["parsing", "regex-fancy"]
+features = ["parsing", "regex-fancy", "yaml-load", "plist-load"]
+
+[dependencies.clap]
+features = ["unicode", "derive", "color"]
+version = "4.3.0"
