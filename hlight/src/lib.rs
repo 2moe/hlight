@@ -16,7 +16,7 @@
 //! ### print to stdout
 //!
 //! ```rust
-//! use hlight::{get_syntax_highlight, theme::theme_ayu_dark, HighLightRes};
+//! use hlight::{gen_syntax_highlight, theme::theme_ayu_dark, HighLightRes};
 //!
 //!
 //! let s: &str = r#"
@@ -30,7 +30,7 @@
 //! // theme_ayu_dark: Cow::from("ayu-dark")
 //! *res.get_name_mut() = theme_ayu_dark();
 //!
-//! get_syntax_highlight("toml", s, Some(&res), None)
+//! gen_syntax_highlight("toml", s, Some(&res), None)
 //!     .expect("Failed to get highlighted toml text");
 //! ```
 //!
@@ -49,7 +49,7 @@
 //! use std::borrow::Cow;
 //! *res.get_name_mut() = Cow::from("OneHalfLight");
 //!
-//! get_syntax_highlight("toml", s, Some(&res), None)?;
+//! gen_syntax_highlight("toml", s, Some(&res), None)?;
 //! ```
 //!
 //! output:
@@ -67,7 +67,7 @@
 //! use std::fs::File;
 //!
 //! let mut file = File::create("test.txt").expect("Failed to create test.txt");
-//! get_syntax_highlight("toml", s, Some(&res), Some(&mut file))
+//! gen_syntax_highlight("toml", s, Some(&res), Some(&mut file))
 //!     .expect("Unable to write syntax-highlighted text to file.")
 //! ```
 mod output;
@@ -75,4 +75,4 @@ mod resource;
 pub mod syntax;
 pub mod theme;
 
-pub use crate::{output::get_syntax_highlight, resource::HighLightRes};
+pub use crate::{output::gen_syntax_highlight, resource::HighLightRes};

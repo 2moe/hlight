@@ -13,7 +13,7 @@ cargo add hlight
 ### print to stdout
 
 ```rust
-use hlight::{get_syntax_highlight, theme::theme_ayu_dark, HighLightRes};
+use hlight::{gen_syntax_highlight, theme::theme_ayu_dark, HighLightRes};
 
 
 let s: &str = r#"
@@ -27,7 +27,7 @@ let mut res = HighLightRes::default().with_background(false);
 // theme_ayu_dark: Cow::from("ayu-dark")
 *res.get_name_mut() = theme_ayu_dark();
 
-get_syntax_highlight("toml", s, Some(&res), None)
+gen_syntax_highlight("toml", s, Some(&res), None)
     .expect("Failed to get highlighted toml text");
 ```
 
@@ -41,7 +41,7 @@ output:
 use std::fs::File;
 
 let mut file = File::create("test.txt").expect("Failed to create test.txt");
-get_syntax_highlight("toml", s, Some(&res), Some(&mut file))
+gen_syntax_highlight("toml", s, Some(&res), Some(&mut file))
     .expect("Unable to write syntax-highlighted text to file.")
 ```
 

@@ -1,6 +1,6 @@
 [package]
 name = "hlight"
-version = "0.0.1-alpha.1"
+version = "0.0.1-alpha.2"
 edition = "2021"
 authors = ["Moe <m@tmoe.me>"]
 keywords = ["syntax", "highlighting"]
@@ -9,10 +9,6 @@ readme = "Readme.md"
 repository = "https://github.com/2moe/hlight"
 license = "Apache-2.0"
 description = "This library is dedicated to delivering exceptional syntax highlighting capabilities."
-
-[lib]
-path = "src/lib.rs"
-
 
 [features]
 default = ["preset-syntax-set", "preset-theme-set"]
