@@ -45,6 +45,24 @@ pub fn load_syntax_set(set: Option<&[u8]>) -> SyntaxSet {
 
 impl<'name> HighLightRes<'name> {
     /// This is the default syntax set.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use hlight::HighLightRes;
+    ///
+    /// let set = HighLightRes::static_syntax_set();
+    ///
+    /// set.syntaxes()
+    ///     .iter()
+    ///     .map(|x| (&x.name, &x.file_extensions))
+    ///     .for_each(|(name, ext)| {
+    ///         println!(
+    ///         "name: {name}\n\
+    ///         ext:{ext:?}\n---"
+    ///         )
+    ///     });
+    /// ```
     pub fn static_syntax_set() -> &'static SyntaxSet {
         static S: OnceCell<SyntaxSet> = OnceCell::new();
         S.get_or_init(|| load_syntax_set(None))
@@ -146,4 +164,24 @@ fn get_toml(set: &'static SyntaxSet) -> &'static SyntaxReference {
 fn get_pwsh(set: &'static SyntaxSet) -> &'static SyntaxReference {
     static S: OnceSyntax = OnceCell::new();
     S.get_or_init(|| find_syntax_by_name(set, "PowerShell"))
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::HighLightRes;
+
+    #[test]
+    fn static_set() {
+        let set = HighLightRes::static_syntax_set();
+
+        set.syntaxes()
+            .iter()
+            .map(|x| (&x.name, &x.file_extensions))
+            .for_each(|(name, ext)| {
+                println!(
+                    "name: {name}\n\
+                    ext:{ext:?}\n---"
+                )
+            });
+    }
 }

@@ -1,3 +1,6 @@
+// cargo +nightly rustdoc --all-features -- --cfg __hlight_doc --document-private-items ; open $CARGO_TARGET_DIR/doc/hlight/index.html
+#![cfg_attr(__hlight_doc, feature(doc_auto_cfg, doc_notable_trait))]
+
 //! # hlight
 //!
 //! A library for output syntax highlighting.

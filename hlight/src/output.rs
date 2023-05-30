@@ -20,8 +20,10 @@ use syntect::{
 /// enabled = false
 /// float = 314e-2
 /// ";
+///
 /// let res = HighLightRes::default().with_background(false);
 /// let mut file = File::create("test.txt").expect("Failed to create test.txt");
+///
 /// get_syntax_highlight("toml", s, Some(&res), Some(&mut file)).expect("Failed to get syntax highlighting");
 /// ```
 pub fn get_syntax_highlight(

@@ -6,7 +6,7 @@ use syntect::{highlighting::Theme, parsing::SyntaxSet};
 
 use crate::theme::theme_monokai;
 
-#[derive(Getters, MutGetters, Debug)]
+#[derive(Getters, MutGetters, Debug, Clone)]
 #[getset(get = "pub with_prefix", get_mut = "pub with_prefix")]
 pub struct HighLightRes<'name> {
     name: Cow<'name, str>,
@@ -17,18 +17,42 @@ pub struct HighLightRes<'name> {
 }
 
 impl<'name> HighLightRes<'name> {
+    /// Create a new instance of HighLightRes
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use hlight::HighLightRes;
+    /// use hlight::theme::load_theme_set;
+    /// use std::borrow::Cow;
+    ///
+    /// const THEMES: &[u8] = include_bytes!(concat!(
+    ///     env!("CARGO_MANIFEST_DIR"),
+    ///     "/assets/theme-syntax-set/theme-set.packdump"
+    /// ));
+    ///
+    /// let set = load_theme_set(Some(THEMES));
+    /// let res = HighLightRes::new(Cow::from("ayu-dark"), &set);
+    /// ```
     pub fn new(name: Cow<'name, str>, theme_set: &'name ThemeSet) -> Self {
         Self {
             name,
             theme_set,
             syntax_set: Self::static_syntax_set(),
-            // theme: OnceCell::new(),
-            // background: true,
             ..Default::default()
         }
     }
 
     /// Enable or disable background
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use hlight::HighLightRes;
+    ///
+    /// let res = HighLightRes::default().with_background(false);
+    /// assert!(!res.get_background())
+    /// ```
     pub fn with_background(self, switch: bool) -> Self {
         Self {
             background: switch,

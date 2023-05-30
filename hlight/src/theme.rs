@@ -56,6 +56,19 @@ impl<'name> HighLightRes<'name> {
     }
 
     /// This is the default theme set.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use hlight::HighLightRes;
+    ///
+    /// let set = HighLightRes::static_theme_set();
+    /// let themes = &set.themes;
+    ///
+    /// for t in themes.keys() {
+    ///     println!("{t}")
+    /// }
+    /// ```
     pub fn static_theme_set() -> &'static ThemeSet {
         static S: OnceCell<ThemeSet> = OnceCell::new();
         S.get_or_init(|| load_theme_set(None))
@@ -66,10 +79,12 @@ const fn monokai_theme_name() -> &'static str {
     "Monokai Extended"
 }
 
+/// "Monokai Extended"
 pub fn theme_monokai<'a>() -> Cow<'a, str> {
     Cow::from(monokai_theme_name())
 }
 
+/// "ayu-dark"
 pub fn theme_ayu_dark<'a>() -> Cow<'a, str> {
     Cow::from(ayu_dark_theme_name())
 }
