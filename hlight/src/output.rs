@@ -152,4 +152,30 @@ mod tests {
         let res = HighLightRes::default().with_background(false);
         gen_syntax_highlight("pwsh", s, Some(&res), None)
     }
+
+    #[test]
+    fn zsh_high_light() -> io::Result<()> {
+        let s = r#"
+        #compdef tomlyre
+
+        autoload -U is-at-least
+        
+        _tomlyre() {
+            typeset -A opt_args
+            typeset -a _arguments_options
+            local ret=1
+        
+            if is-at-least 5.2; then
+                _arguments_options=(-s -S -C)
+            else
+                _arguments_options=(-s -C)
+            fi
+        
+            local context curcontext="$curcontext" state line
+            _arguments "${_arguments_options[@]}" \
+        "#;
+
+        let res = HighLightRes::default().with_background(true);
+        gen_syntax_highlight("pwsh", s, Some(&res), None)
+    }
 }
