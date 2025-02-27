@@ -1,6 +1,6 @@
 [workspace]
-members = ["hlight", "hlight-dump"]
-resolver = "2"
+members = ["crates/hlight", "crates/hlight-dump"]
+resolver = "3"
 
 [profile.release]
 panic = "unwind"
@@ -10,8 +10,43 @@ inherits = "release"
 panic = "abort"
 strip = true
 lto = "thin"
+opt-level = "s"
 
 [profile.fat]
 inherits = "thin"
 lto = "fat"
 opt-level = "z"
+
+[workspace.package]
+rust-version = "1.85.0"
+edition = "2024"
+authors = ["Moe <m@tmoe.me>"]
+license = "Apache-2.0"
+repository = "https://github.com/2moe/hlight"
+exclude = ["/rust-toolchain.toml", "/assets"]
+
+[workspace.lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(__unstable_doc)'] }
+
+[workspace.dependencies.syntect]
+version = "5.2"
+default-features = false
+
+[workspace.dependencies]
+getset = "0.1"
+log = "0.4"
+tap = "1.0"
+compact_str = "0.9"
+# --------------
+[package]
+name = "tests"
+edition.workspace = true
+
+[dev-dependencies]
+itertools = "0.14.0"
+shlex = "1.3"
+tap.workspace = true
+testutils = "0.0.0"
+thiserror = "2.0.11"
+hlight = { path = "./crates/hlight" }
+# --------------

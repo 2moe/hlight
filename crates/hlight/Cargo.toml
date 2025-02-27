@@ -1,32 +1,37 @@
 [package]
 name = "hlight"
-version = "0.0.1"
-edition = "2021"
-authors = ["Moe <m@tmoe.me>"]
+version = "0.0.2"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+exclude.workspace = true
+
 keywords = ["syntax", "highlighting"]
 categories = ["text-processing"]
 readme = "Readme.md"
-repository = "https://github.com/2moe/hlight"
-license = "Apache-2.0"
 description = "This library is dedicated to delivering exceptional syntax highlighting capabilities."
 
 [features]
 default = ["preset-syntax-set", "preset-theme-set"]
 preset-syntax-set = []
 preset-theme-set = []
-# log = ["dep:log"]
 
 [dependencies]
-getset = "0.1.2"
-log = "0.4.18"
-once_cell = "1.17.1"
+getset.workspace = true
+log = { workspace = true }
+tap = { workspace = true }
+compact_str = { workspace = true }
 
 [dependencies.syntect]
-version = "5.0.0"
-default-features = false
+workspace = true
 features = ["parsing", "regex-fancy"]
 
 [package.metadata.docs.rs]
 all-features = true
-targets = ["x86_64-unknown-linux-gnu"]
-rustdoc-args = ["--cfg", "__hlight_doc"]
+rustdoc-args = ["--cfg", "__unstable_doc"]
+# targets = ["x86_64-unknown-linux-gnu"]
+
+[lints]
+workspace = true

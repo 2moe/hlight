@@ -1,0 +1,36 @@
+[package]
+name = "hlight-dump"
+version = "0.0.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+exclude.workspace = true
+
+categories = ["command-line-utilities", "encoding"]
+readme = "Readme.md"
+description = "Dump the theme/syntax set of an old version of Sublime as binary data"
+
+[dependencies]
+anyhow = "1.0"
+getset = { workspace = true }
+log = { workspace = true }
+serde = "1.0"
+clap_complete = "4.5"
+env_logger = { version = "0.11", default-features = false, features = [
+    "regex",
+    "auto-color",
+] }
+
+[dependencies.syntect]
+workspace = true
+default-features = false
+features = ["parsing", "regex-fancy", "yaml-load", "plist-load"]
+
+[dependencies.clap]
+features = ["unicode", "derive", "color"]
+version = "4.5"
+
+[lints]
+workspace = true

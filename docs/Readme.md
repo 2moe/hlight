@@ -1,0 +1,63 @@
+# HLight
+
+[![hlight.crate](https://img.shields.io/crates/v/hlight?label=hlight%28lib%29)](https://crates.io/crates/hlight)
+
+[![hlight-dump.crate](https://img.shields.io/crates/v/hlight-dump?label=hlight-dump%28bin%29)](https://crates.io/crates/hlight-dump)
+
+[![Documentation](https://docs.rs/hlight/badge.svg)](https://docs.rs/hlight) [![Apache-2 licensed](https://img.shields.io/crates/l/hlight.svg)](./License)
+
+Dedicated to delivering exceptional syntax highlighting capabilities.
+
+## ChangeLog
+
+[hlight/Changelog.md](../crates/hlight/Changelog.md)
+
+## Usage
+
+[hlight/readme](../crates/hlight/Readme.md)
+
+[hlight-dump/readme](../crates/hlight-dump/Readme.md)
+
+## Preview
+
+<table>
+  <tr>
+    <td><img src="../assets/tomlyre-img/theme/dracula.png" alt="dracula"></td>
+    <td><img src="../assets/tomlyre-img/theme/monokai-bright.png" alt="monokai-bright"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+      <td><img src="../assets/tomlyre-img/theme/monokai.png" alt="monokai"></td>
+      <td><img src="../assets/tomlyre-img/theme/monokai-light.png" alt="monokai-light"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+      <td><img src="../assets/tomlyre-img/theme/onedark.png" alt="onedark"></td>
+      <td><img src="../assets/tomlyre-img/theme/one-dark-tomorrow.png" alt="one-dark-tomorrow"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+      <td><img src="../assets/tomlyre-img/theme/one-half-dark.png" alt="one-half-dark"></td>
+      <td><img src="../assets/tomlyre-img/theme/one-half-light.png" alt="one-half-light"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="../assets/tomlyre-img/theme/widget-one-dark.png" alt="widget-one-dark"></td>
+    <td><img src="../assets/tomlyre-img/theme/ayu-light.png" alt="ayu-light.png"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="../assets/tomlyre-img/theme/ayu-dark.png" alt="ayu-dark"></td>
+    <td><img src="../assets/tomlyre-img/theme/ayu-migrage.png" alt="ayu-migrage"></td>
+  </tr>
+</table>
