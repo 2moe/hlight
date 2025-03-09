@@ -12,25 +12,25 @@ use crate::{resource::HighLightRes, syntax::find_syntax};
 
 #[derive(Getters, WithSetters)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
-pub struct GenSyntax<'a> {
+pub struct Highlighter<'a> {
   dst_fmt: &'a str,
-  contents: &'a str,
-  style: Option<HighLightRes<'a>>,
+  content: &'a str,
+  resource: Option<HighLightRes<'a>>,
   writer: Option<&'a mut dyn Write>,
 }
 
-impl Default for GenSyntax<'_> {
+impl Default for Highlighter<'_> {
   fn default() -> Self {
     Self {
       dst_fmt: "markdown",
-      contents: "",
-      style: Some(HighLightRes::default()),
+      content: "",
+      resource: Some(HighLightRes::default()),
       writer: None,
     }
   }
 }
 
-impl GenSyntax<'_> {
+impl Highlighter<'_> {
   /// Prints syntax-highlighted code to either standard output or a provided
   /// writer, using the selected syntax highlighting style to highlight the code
   /// beforehand.
@@ -39,7 +39,7 @@ impl GenSyntax<'_> {
   ///
   /// ```ignore
   /// use hlight::HighLightRes;
-  /// use hlight::GenSyntax;
+  /// use hlight::Highlighter;
   /// use std::fs::File;
   ///
   /// let s = "
@@ -51,18 +51,18 @@ impl GenSyntax<'_> {
   /// let res = HighLightRes::default().with_background(false);
   /// let mut file = File::create("test.txt").expect("Failed to create test.txt");
   ///
-  /// GenSyntax::default()
+  /// Highlighter::default()
   ///   .with_dst_fmt("toml")
-  ///   .with_contents(s)
-  ///   .with_style(res.into())
+  ///   .with_content(s)
+  ///   .with_resource(res.into())
   ///   .with_writer(Some(&mut file))
   ///   .run();
   /// ```
   pub fn run(self) -> io::Result<()> {
     let Self {
       dst_fmt,
-      contents,
-      style,
+      content: contents,
+      resource: style,
       writer,
     } = self;
 
@@ -156,10 +156,10 @@ mod tests {
   #[test]
   fn print_highlighted_text() -> io::Result<()> {
     let res = HighLightRes::default();
-    GenSyntax::default()
+    Highlighter::default()
       .with_dst_fmt("toml")
-      .with_style(res.into())
-      .with_contents(S)
+      .with_resource(res.into())
+      .with_content(S)
       .run()?;
     Ok(())
   }
@@ -173,10 +173,10 @@ mod tests {
     let res = HighLightRes::default().with_background(false);
     let mut file = File::create("/tmp/test.txt")?;
 
-    GenSyntax::default()
+    Highlighter::default()
       .with_dst_fmt("toml")
-      .with_contents(S)
-      .with_style(res.into())
+      .with_content(S)
+      .with_resource(res.into())
       .with_writer(Some(&mut file))
       .run()?;
     Ok(())
@@ -206,9 +206,9 @@ mod tests {
         "#;
 
     let res = HighLightRes::default().with_background(false);
-    GenSyntax::default()
-      .with_contents(s)
-      .with_style(res.into())
+    Highlighter::default()
+      .with_content(s)
+      .with_resource(res.into())
       .with_dst_fmt("pwsh")
       .run()?;
     // gen_syntax_highlight("pwsh", s, Some(&res), None)
@@ -238,10 +238,10 @@ mod tests {
         "#;
 
     let res = HighLightRes::default().with_background(true);
-    GenSyntax::default()
+    Highlighter::default()
       .with_dst_fmt("sh")
-      .with_contents(s)
-      .with_style(res.into())
+      .with_content(s)
+      .with_resource(res.into())
       .run()?;
     Ok(())
   }

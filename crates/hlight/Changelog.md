@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 0.0.4
+
+- `GenSyntax` -> `Highlighter`
+
 ## 0.0.3
 
 - remove `match_static_syntax()`

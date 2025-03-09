@@ -17,7 +17,7 @@ cargo add hlight
 ### print to stdout
 
 ```rust
-use hlight::{GenSyntax, theme::names::ayu_dark, HighLightRes};
+use hlight::{Highlighter, theme::names::ayu_dark, HighLightRes};
 
 
 let s: &str = r#"
@@ -31,10 +31,10 @@ let res = HighLightRes::default()
   .with_background(false)
   .with_name(ayu_dark());
 
-let _ = GenSyntax::default()
+let _ = Highlighter::default()
   .with_dst_fmt("toml")
-  .with_contents(s)
-  .with_style(res.into())
+  .with_content(s)
+  .with_resource(res.into())
   .run();
 ```
 
@@ -47,7 +47,7 @@ output:
 ```rust
 use std::fs::File;
 
-use hlight::{GenSyntax, HighLightRes, theme::names::ayu_dark};
+use hlight::{Highlighter, HighLightRes, theme::names::ayu_dark};
 
 let s: &str = r#"
 [main]
@@ -62,10 +62,10 @@ let res = HighLightRes::default()
 
 let mut file = File::create("tmp.txt").expect("Failed to create test.txt");
 
-let _ = GenSyntax::default()
+let _ = Highlighter::default()
   .with_dst_fmt("toml")
-  .with_contents(s)
-  .with_style(res.into())
+  .with_content(s)
+  .with_resource(res.into())
   .with_writer(Some(&mut file))
   .run();
 ```
