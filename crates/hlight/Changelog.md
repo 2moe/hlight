@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 0.0.3
+
+- remove `match_static_syntax()`
+- "HighLightRes::syntax_set": `'static` -> `'theme`
+
 ## 0.0.2
 
 - Upgrade to Rust Edition 2024

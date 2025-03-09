@@ -23,7 +23,9 @@ edition = "2024"
 authors = ["Moe <m@tmoe.me>"]
 license = "Apache-2.0"
 repository = "https://github.com/2moe/hlight"
-exclude = ["/rust-toolchain.toml", "/assets"]
+# exclude = ["/rust-toolchain.toml", "/assets"]
+exclude = ["/rust-toolchain.toml"]
+
 
 [workspace.lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(__unstable_doc)'] }

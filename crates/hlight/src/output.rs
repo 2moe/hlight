@@ -8,7 +8,7 @@ use syntect::{
 };
 use tap::Pipe;
 
-use crate::{resource::HighLightRes, syntax::match_static_syntax};
+use crate::{resource::HighLightRes, syntax::find_syntax};
 
 #[derive(Getters, WithSetters)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
@@ -93,7 +93,7 @@ impl GenSyntax<'_> {
 
     log::debug!("About to Load the SyntaxSet and ThemeSet");
 
-    let syntax = match_static_syntax(syntax_set, dst_fmt);
+    let syntax = find_syntax(syntax_set, dst_fmt);
 
     log::trace!("ext: {:?}", syntax.file_extensions);
     log::debug!("syntax:{}", syntax.name);
@@ -156,7 +156,11 @@ mod tests {
   #[test]
   fn print_highlighted_text() -> io::Result<()> {
     let res = HighLightRes::default();
-    // gen_syntax_highlight("toml", S, Some(&res), None)
+    GenSyntax::default()
+      .with_dst_fmt("toml")
+      .with_style(res.into())
+      .with_contents(S)
+      .run()?;
     Ok(())
   }
 
@@ -168,7 +172,13 @@ mod tests {
 
     let res = HighLightRes::default().with_background(false);
     let mut file = File::create("/tmp/test.txt")?;
-    // gen_syntax_highlight("toml", S, Some(&res), Some(&mut file))
+
+    GenSyntax::default()
+      .with_dst_fmt("toml")
+      .with_contents(S)
+      .with_style(res.into())
+      .with_writer(Some(&mut file))
+      .run()?;
     Ok(())
   }
 
@@ -196,6 +206,11 @@ mod tests {
         "#;
 
     let res = HighLightRes::default().with_background(false);
+    GenSyntax::default()
+      .with_contents(s)
+      .with_style(res.into())
+      .with_dst_fmt("pwsh")
+      .run()?;
     // gen_syntax_highlight("pwsh", s, Some(&res), None)
     Ok(())
   }
@@ -223,7 +238,11 @@ mod tests {
         "#;
 
     let res = HighLightRes::default().with_background(true);
-    // gen_syntax_highlight("pwsh", s, Some(&res), None)
+    GenSyntax::default()
+      .with_dst_fmt("sh")
+      .with_contents(s)
+      .with_style(res.into())
+      .run()?;
     Ok(())
   }
 }

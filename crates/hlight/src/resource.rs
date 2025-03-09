@@ -35,7 +35,7 @@ pub struct HighLightRes<'theme> {
   #[getset(get = "pub(crate)")]
   theme: OnceCell<Theme>,
   theme_set: &'theme ThemeSet,
-  syntax_set: &'static SyntaxSet,
+  syntax_set: &'theme SyntaxSet,
   background: bool,
 }
 

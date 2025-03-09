@@ -6,8 +6,6 @@ pub use syntect::parsing::{SyntaxReference, SyntaxSet};
 
 use crate::{resource::HighLightRes, theme::READ_DUMP_DATA_ERR};
 
-type OnceSyntax = OnceLock<&'static SyntaxReference>;
-
 #[cfg(feature = "preset-syntax-set")]
 const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
   env!("CARGO_MANIFEST_DIR"),
@@ -68,42 +66,23 @@ impl HighLightRes<'_> {
   }
 }
 
-/// It matches the format string against known syntax formats(e.g. md, toml,
-/// json, yaml), returning a reference to the corresponding syntax if found.
-///
-/// If the format string does not match any known formats, it uses a generic
-/// function to find a syntax matching the format string.
-///
-/// # Example
-///
-/// ```
-/// use hlight::syntax::match_static_syntax;
-/// use hlight::HighLightRes;
-///
-/// let set = HighLightRes::static_syntax_set();
-/// let syntax = match_static_syntax(set, "toml");
-/// ```
-pub fn match_static_syntax(
-  set: &'static SyntaxSet,
-  fmt: &str,
-) -> &'static SyntaxReference {
-  match fmt {
-    "md" | "markdown" => get_markdown(set),
-    "toml" => get_toml(set),
-    "yaml" | "yml" => get_yaml(set),
-    "json" | "json5" | "ron" => get_json(set),
-    "pwsh" | "ps1" | "powershell" => get_pwsh(set),
-    _ => find_syntax(set, fmt),
-  }
-}
+// pub fn find_syntax<'a>(set: &'a SyntaxSet, fmt: &str) -> &'a SyntaxReference
+// {   let find = |name| find_syntax_name(set, name);
+
+//   match fmt {
+//     "md" | "markdown" => find("Markdown"),
+//     "toml" => find("TOML"),
+//     "yaml" | "yml" => find("YAML"),
+//     "json" | "json5" | "ron" => find("JSON"),
+//     "pwsh" | "ps1" | "powershell" => find("PowerShell"),
+//     _ => find_syntax(set, fmt),
+//   }
+// }
 
 /// Finds and returns the appropriate syntax highlighting definition from a
 /// `SyntaxSet` based on a given destination format. If not found, it will
 /// fallback to json.
-pub(crate) fn find_syntax<'a>(
-  set: &'a SyntaxSet,
-  dst_fmt: &str,
-) -> &'a SyntaxReference {
+pub fn find_syntax<'a>(set: &'a SyntaxSet, dst_fmt: &str) -> &'a SyntaxReference {
   set
     .find_syntax_by_extension(dst_fmt)
     .unwrap_or_else(|| {
@@ -147,34 +126,6 @@ pub fn find_syntax_name<'a>(set: &'a SyntaxSet, name: &str) -> &'a SyntaxReferen
         .find_syntax_by_extension(name)
         .unwrap_or(set.find_syntax_plain_text())
     })
-}
-
-// static SyntaxReference:
-// md, json, yaml, toml
-//
-fn get_markdown(set: &'static SyntaxSet) -> &'static SyntaxReference {
-  static S: OnceSyntax = OnceLock::new();
-  S.get_or_init(|| find_syntax_name(set, "Markdown"))
-}
-
-fn get_json(set: &'static SyntaxSet) -> &'static SyntaxReference {
-  static S: OnceSyntax = OnceLock::new();
-  S.get_or_init(|| find_syntax_name(set, "JSON"))
-}
-
-fn get_yaml(set: &'static SyntaxSet) -> &'static SyntaxReference {
-  static S: OnceSyntax = OnceLock::new();
-  S.get_or_init(|| find_syntax_name(set, "YAML"))
-}
-
-fn get_toml(set: &'static SyntaxSet) -> &'static SyntaxReference {
-  static S: OnceSyntax = OnceLock::new();
-  S.get_or_init(|| find_syntax_name(set, "TOML"))
-}
-
-fn get_pwsh(set: &'static SyntaxSet) -> &'static SyntaxReference {
-  static S: OnceSyntax = OnceLock::new();
-  S.get_or_init(|| find_syntax_name(set, "PowerShell"))
 }
 
 #[cfg(test)]
