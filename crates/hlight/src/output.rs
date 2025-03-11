@@ -13,7 +13,8 @@ use crate::{resource::HighLightRes, syntax::find_syntax};
 #[derive(Getters, WithSetters)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
 pub struct Highlighter<'a> {
-  dst_fmt: &'a str,
+  /// target syntax format (e.g., "json")
+  syntax_name: &'a str,
   content: &'a str,
   resource: Option<HighLightRes<'a>>,
   writer: Option<&'a mut dyn Write>,
@@ -22,7 +23,7 @@ pub struct Highlighter<'a> {
 impl Default for Highlighter<'_> {
   fn default() -> Self {
     Self {
-      dst_fmt: "markdown",
+      syntax_name: "markdown",
       content: "",
       resource: Some(HighLightRes::default()),
       writer: None,
@@ -52,7 +53,7 @@ impl Highlighter<'_> {
   /// let mut file = File::create("test.txt").expect("Failed to create test.txt");
   ///
   /// Highlighter::default()
-  ///   .with_dst_fmt("toml")
+  ///   .with_syntax_name("toml")
   ///   .with_content(s)
   ///   .with_resource(res.into())
   ///   .with_writer(Some(&mut file))
@@ -60,7 +61,7 @@ impl Highlighter<'_> {
   /// ```
   pub fn run(self) -> io::Result<()> {
     let Self {
-      dst_fmt,
+      syntax_name,
       content: contents,
       resource: style,
       writer,
@@ -79,7 +80,7 @@ impl Highlighter<'_> {
     let hl_res = match style {
       Some(s)
         if !s
-          .get_name()
+          .get_theme_name()
           .eq_ignore_ascii_case("none") =>
       {
         s
@@ -93,7 +94,7 @@ impl Highlighter<'_> {
 
     log::debug!("About to Load the SyntaxSet and ThemeSet");
 
-    let syntax = find_syntax(syntax_set, dst_fmt);
+    let syntax = find_syntax(syntax_set, syntax_name);
 
     log::trace!("ext: {:?}", syntax.file_extensions);
     log::debug!("syntax:{}", syntax.name);
@@ -157,7 +158,7 @@ mod tests {
   fn print_highlighted_text() -> io::Result<()> {
     let res = HighLightRes::default();
     Highlighter::default()
-      .with_dst_fmt("toml")
+      .with_syntax_name("toml")
       .with_resource(res.into())
       .with_content(S)
       .run()?;
@@ -174,7 +175,7 @@ mod tests {
     let mut file = File::create("/tmp/test.txt")?;
 
     Highlighter::default()
-      .with_dst_fmt("toml")
+      .with_syntax_name("toml")
       .with_content(S)
       .with_resource(res.into())
       .with_writer(Some(&mut file))
@@ -209,7 +210,7 @@ mod tests {
     Highlighter::default()
       .with_content(s)
       .with_resource(res.into())
-      .with_dst_fmt("pwsh")
+      .with_syntax_name("pwsh")
       .run()?;
     // gen_syntax_highlight("pwsh", s, Some(&res), None)
     Ok(())
@@ -239,7 +240,7 @@ mod tests {
 
     let res = HighLightRes::default().with_background(true);
     Highlighter::default()
-      .with_dst_fmt("sh")
+      .with_syntax_name("sh")
       .with_content(s)
       .with_resource(res.into())
       .run()?;

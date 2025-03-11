@@ -1,4 +1,17 @@
 [alias]
+ta = [
+    "test",
+    "--package",
+    "tests",
+    "--test",
+    "test_all",
+    "--all-features",
+    "--",
+    "test_all",
+    "--exact",
+    "--show-output",
+    "--ignored",
+]
 open-doc = [
     "test",
     "--package",

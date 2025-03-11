@@ -23,9 +23,6 @@ edition = "2024"
 authors = ["Moe <m@tmoe.me>"]
 license = "Apache-2.0"
 repository = "https://github.com/2moe/hlight"
-# exclude = ["/rust-toolchain.toml", "/assets"]
-exclude = ["/rust-toolchain.toml"]
-
 
 [workspace.lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(__unstable_doc)'] }
@@ -45,10 +42,13 @@ name = "tests"
 edition.workspace = true
 
 [dev-dependencies]
-itertools = "0.14.0"
-shlex = "1.3"
 tap.workspace = true
-testutils = "0.0.0"
-thiserror = "2.0.11"
+# thiserror = "2.0"
+itertools = "0.14"
+# cargo_metadata = "0.19"
 hlight = { path = "./crates/hlight" }
+anyhow = "1.0.97"
+[dev-dependencies.testutils]
+version = "0.0.4"
+# path = "../testutils"
 # --------------

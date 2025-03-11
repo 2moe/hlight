@@ -12,10 +12,10 @@ fn test_output() {
 
   let res = HighLightRes::default()
     .with_background(false)
-    .with_name(ayu_dark());
+    .with_theme_name(ayu_dark());
 
   let _ = Highlighter::default()
-    .with_dst_fmt("toml")
+    .with_syntax_name("toml")
     .with_content(s)
     .with_resource(res.into())
     .run();
@@ -40,12 +40,12 @@ fn test_output_to_file() {
 
   let res = HighLightRes::default()
     .with_background(false)
-    .with_name(ayu_dark());
+    .with_theme_name(ayu_dark());
 
   let mut file = File::create("tmp.txt").expect("Failed to create test.txt");
 
   let _ = Highlighter::default()
-    .with_dst_fmt("toml")
+    .with_syntax_name("toml")
     .with_content(s)
     .with_resource(res.into())
     .with_writer(Some(&mut file))

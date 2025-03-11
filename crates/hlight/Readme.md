@@ -29,10 +29,10 @@ float = nan
 
 let res = HighLightRes::default()
   .with_background(false)
-  .with_name(ayu_dark());
+  .with_theme_name(ayu_dark());
 
 let _ = Highlighter::default()
-  .with_dst_fmt("toml")
+  .with_syntax_name("toml")
   .with_content(s)
   .with_resource(res.into())
   .run();
@@ -58,12 +58,12 @@ float = nan
 
 let res = HighLightRes::default()
   .with_background(false)
-  .with_name(ayu_dark());
+  .with_theme_name(ayu_dark());
 
 let mut file = File::create("tmp.txt").expect("Failed to create test.txt");
 
 let _ = Highlighter::default()
-  .with_dst_fmt("toml")
+  .with_syntax_name("toml")
   .with_content(s)
   .with_resource(res.into())
   .with_writer(Some(&mut file))
@@ -99,7 +99,7 @@ const THEMES: &[u8] = include_bytes!(concat!(
 fn main() {
     let set = load_theme_set(Some(THEMES));
 
-    let res = HighLightRes::default().with_theme_set(&set).with_name("Custom-theme-name".into());
+    let res = HighLightRes::default().with_theme_set(&set).with_theme_name("Custom-theme-name".into());
 
     show_theme_set(res.get_theme_set())
 }

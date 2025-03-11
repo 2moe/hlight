@@ -73,7 +73,7 @@ impl HighLightRes<'_> {
     self
       .get_theme()
       .get_or_init(|| {
-        let name = self.get_name().as_str();
+        let name = self.get_theme_name().as_str();
         let set = self.get_theme_set();
         set.themes[name].to_owned()
       })

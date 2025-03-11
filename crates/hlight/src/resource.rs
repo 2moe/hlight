@@ -1,4 +1,4 @@
-use std::cell::OnceCell;
+use std::sync::OnceLock;
 
 use getset::{Getters, WithSetters};
 use syntect::{
@@ -17,7 +17,7 @@ use crate::theme::{self, names::CmString};
 /// use hlight::theme::names::monokai;
 ///
 /// let res = HighLightRes::default();
-/// assert_eq!(res.get_name(), monokai());
+/// assert_eq!(res.get_theme_name(), monokai());
 /// ```
 ///
 /// ## Enable or disable background
@@ -31,9 +31,9 @@ use crate::theme::{self, names::CmString};
 #[derive(Getters, WithSetters, Debug, Clone)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
 pub struct HighLightRes<'theme> {
-  name: CmString,
+  theme_name: CmString,
   #[getset(get = "pub(crate)")]
-  theme: OnceCell<Theme>,
+  theme: OnceLock<Theme>,
   theme_set: &'theme ThemeSet,
   syntax_set: &'theme SyntaxSet,
   background: bool,
@@ -59,7 +59,7 @@ impl<'a> HighLightRes<'a> {
   /// ```
   pub fn new(name: &str, theme_set: &'a ThemeSet) -> Self {
     Self {
-      name: name.into(),
+      theme_name: name.into(),
       theme_set,
       syntax_set: Self::static_syntax_set(),
       ..Default::default()
@@ -70,8 +70,8 @@ impl<'a> HighLightRes<'a> {
 impl Default for HighLightRes<'_> {
   fn default() -> Self {
     Self {
-      name: theme::names::monokai(),
-      theme: OnceCell::new(),
+      theme_name: theme::names::monokai(),
+      theme: OnceLock::new(),
       syntax_set: Self::static_syntax_set(),
       theme_set: Self::static_theme_set(),
       background: true,
@@ -107,7 +107,7 @@ mod tests {
     let res = HighLightRes::default();
     assert_theme_name!(res, names::monokai().as_str());
 
-    let res2 = HighLightRes::default().with_name(names::ayu_dark());
+    let res2 = HighLightRes::default().with_theme_name(names::ayu_dark());
     assert_theme_name!(res2, "ayu");
   }
 }

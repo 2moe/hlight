@@ -6,8 +6,7 @@ authors.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
-exclude.workspace = true
-
+exclude = ["/rust-toolchain.toml"]
 categories = ["command-line-utilities", "encoding"]
 readme = "Readme.md"
 description = "Dump the theme/syntax set of an old version of Sublime as binary data"
@@ -25,7 +24,6 @@ env_logger = { version = "0.11", default-features = false, features = [
 
 [dependencies.syntect]
 workspace = true
-default-features = false
 features = ["parsing", "regex-fancy", "yaml-load", "plist-load"]
 
 [dependencies.clap]

@@ -1,13 +1,12 @@
 [package]
 name = "hlight"
-version = "0.0.4"
+version = "0.0.5"
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-repository.workspace = true
 rust-version.workspace = true
-exclude.workspace = true
-
+repository.workspace = true
+exclude = ["/rust-toolchain.toml"]
 keywords = ["syntax", "highlighting"]
 categories = ["text-processing"]
 readme = "Readme.md"
@@ -20,18 +19,19 @@ preset-theme-set = []
 
 [dependencies]
 getset.workspace = true
-log = { workspace = true }
-tap = { workspace = true }
-compact_str = { workspace = true }
+log.workspace = true
+tap.workspace = true
+compact_str.workspace = true
 
 [dependencies.syntect]
-workspace = true
+# version = "5.2"
+# default-features = false
 features = ["parsing", "regex-fancy"]
+workspace = true
 
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "__unstable_doc"]
-# targets = ["x86_64-unknown-linux-gnu"]
 
 [lints]
 workspace = true

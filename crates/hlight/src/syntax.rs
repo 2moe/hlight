@@ -82,16 +82,19 @@ impl HighLightRes<'_> {
 /// Finds and returns the appropriate syntax highlighting definition from a
 /// `SyntaxSet` based on a given destination format. If not found, it will
 /// fallback to json.
-pub fn find_syntax<'a>(set: &'a SyntaxSet, dst_fmt: &str) -> &'a SyntaxReference {
+pub fn find_syntax<'a>(
+  set: &'a SyntaxSet,
+  syntax_name: &str,
+) -> &'a SyntaxReference {
   set
-    .find_syntax_by_extension(dst_fmt)
+    .find_syntax_by_extension(syntax_name)
     .unwrap_or_else(|| {
       set
-        .find_syntax_by_name(dst_fmt)
+        .find_syntax_by_name(syntax_name)
         .unwrap_or_else(|| {
           let to_json = || set.find_syntax_by_extension("json");
 
-          match dst_fmt {
+          match syntax_name {
             "sexp" | "lexpr" => set
               .find_syntax_by_extension("lisp")
               .or_else(to_json),

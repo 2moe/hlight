@@ -1,5 +1,12 @@
 # ChangeLog
 
+## 0.0.5
+
+Breaking changes:
+
+- `HighLightRes.name` -> `HighLightRes.theme_name`
+- `Highlighter.dst_fmt` -> `Highlighter.syntax_name`
+
 ## 0.0.4
 
 - `GenSyntax` -> `Highlighter`
