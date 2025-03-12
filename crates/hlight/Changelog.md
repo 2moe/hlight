@@ -1,5 +1,21 @@
 # ChangeLog
 
+## 0.0.7
+
+- change the type of `HighlightResource.theme`
+
+Previous:
+
+```rust
+theme: OnceLock<Theme>,
+```
+
+Now:
+
+```rust
+theme: OnceLock<&'theme Theme>,
+```
+
 ## 0.0.6
 
 Breaking changes:

@@ -34,7 +34,7 @@ pub struct HighlightResource<'theme> {
   theme_name: CmString,
   #[getset(get = "pub(crate)")]
   /// - get or init: [Self::get_or_init_theme]
-  theme: OnceLock<Theme>,
+  theme: OnceLock<&'theme Theme>,
   theme_set: &'theme ThemeSet,
   syntax_set: &'theme SyntaxSet,
   background: bool,

@@ -75,7 +75,7 @@ impl HighlightResource<'_> {
       .get_or_init(|| {
         let name = self.get_theme_name().as_str();
         let set = self.get_theme_set();
-        set.themes[name].to_owned()
+        &set.themes[name]
       })
   }
 
