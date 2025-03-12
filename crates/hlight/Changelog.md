@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 0.0.9 (Upcoming)
+
+- chore(static-set): OnceLock => LazyLock
+- `HighlightResource::new()`: `name: &str` => `name: impl Into<CmString>`
+
 ## 0.0.8
 
 Separate the theme-set and syntax-set into an individual crate: hlight-assets.
@@ -24,9 +29,9 @@ theme: OnceLock<&'theme Theme>,
 
 Breaking changes:
 
-- `HighLightRes` -> `HighlightResource`
-- `get_theme_or_init_once()` -> `get_or_init_theme()`
-- `Highlighter.resource::default()`: `Some(_)` -> `None`
+- `HighLightRes` => `HighlightResource`
+- `get_theme_or_init_once()` => `get_or_init_theme()`
+- `Highlighter.resource::default()`: `Some(_)` => `None`
 - change the `Highlighter.resource` type from `Option<_>` to `Option<&_>`
 
 Previous:
@@ -45,17 +50,17 @@ Now:
 
 Breaking changes:
 
-- `HighLightRes.name` -> `HighLightRes.theme_name`
-- `Highlighter.dst_fmt` -> `Highlighter.syntax_name`
+- `HighLightRes.name` => `HighLightRes.theme_name`
+- `Highlighter.dst_fmt` => `Highlighter.syntax_name`
 
 ## 0.0.4
 
-- `GenSyntax` -> `Highlighter`
+- `GenSyntax` => `Highlighter`
 
 ## 0.0.3
 
 - remove `match_static_syntax()`
-- `HighLightRes::syntax_set`: `'static` -> `'theme`
+- `HighLightRes::syntax_set`: `'static` => `'theme`
 
 ## 0.0.2
 

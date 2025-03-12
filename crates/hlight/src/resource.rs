@@ -51,7 +51,7 @@ impl<'a> HighlightResource<'a> {
   /// let set = HighlightResource::static_theme_set();
   /// let res = HighlightResource::new("ayu-dark", &set);
   /// ```
-  pub fn new(name: &str, theme_set: &'a ThemeSet) -> Self {
+  pub fn new<S: Into<CmString>>(name: S, theme_set: &'a ThemeSet) -> Self {
     Self {
       theme_name: name.into(),
       theme_set,

@@ -1,4 +1,4 @@
-use std::sync::OnceLock;
+use std::sync::LazyLock;
 
 use syntect::dumps;
 pub use syntect::parsing::{SyntaxReference, SyntaxSet};
@@ -31,7 +31,7 @@ pub fn load_syntax_set(set: Option<&[u8]>) -> SyntaxSet {
       dumps::from_uncompressed_data(set.unwrap_or(hlight_assets::SUBLIME_SYNTAXES))
         .expect(msg)
     }
-    #[allow(unreachable_patterns)]
+    #[cfg(not(feature = "preset-syntax-set"))]
     _ => SyntaxSet::default(),
   }
 }
@@ -57,8 +57,8 @@ impl HighlightResource<'_> {
   ///     });
   /// ```
   pub fn static_syntax_set() -> &'static SyntaxSet {
-    static S: OnceLock<SyntaxSet> = OnceLock::new();
-    S.get_or_init(|| load_syntax_set(None))
+    static S: LazyLock<SyntaxSet> = LazyLock::new(|| load_syntax_set(None));
+    &S
   }
 }
 
@@ -74,6 +74,15 @@ impl HighlightResource<'_> {
 //     _ => find_syntax(set, fmt),
 //   }
 // }
+
+// type LazySyntax<'a> = std::sync::OnceLock<&'a SyntaxReference>;
+// pub struct SyntaxesCache<'a> {
+//   md: LazySyntax<'a>,
+//   json: LazySyntax<'a>,
+//   yaml: LazySyntax<'a>,
+//   pwsh: LazySyntax<'a>,
+// }
+//
 
 /// Finds and returns the appropriate syntax highlighting definition from a
 /// `SyntaxSet` based on a given destination format. If not found, it will

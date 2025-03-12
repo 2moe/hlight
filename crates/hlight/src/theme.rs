@@ -1,4 +1,4 @@
-use std::sync::OnceLock;
+use std::sync::LazyLock;
 
 pub use syntect::{
   dumps,
@@ -57,7 +57,7 @@ pub fn load_theme_set(set: Option<&[u8]>) -> ThemeSet {
     #[cfg(feature = "preset-theme-set")]
     _ => dumps::from_uncompressed_data(set.unwrap_or(hlight_assets::THEME_SET))
       .expect(msg),
-    #[allow(unreachable_patterns)]
+    #[cfg(not(feature = "preset-theme-set"))]
     _ => ThemeSet::default(),
   }
 }
@@ -89,8 +89,8 @@ impl HighlightResource<'_> {
   /// }
   /// ```
   pub fn static_theme_set() -> &'static ThemeSet {
-    static S: OnceLock<ThemeSet> = OnceLock::new();
-    S.get_or_init(|| load_theme_set(None))
+    static S: LazyLock<ThemeSet> = LazyLock::new(|| load_theme_set(None));
+    &S
   }
 }
 

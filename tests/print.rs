@@ -1,6 +1,5 @@
-#[ignore]
 #[test]
-fn test_output() {
+fn test_output() -> std::io::Result<()> {
   use hlight::{HighlightResource, Highlighter, theme::names::ayu_dark};
 
   let s: &str = r#"
@@ -14,19 +13,16 @@ fn test_output() {
     .with_background(false)
     .with_theme_name(ayu_dark());
 
-  let _ = Highlighter::default()
+  Highlighter::default()
     .with_syntax_name("toml")
     .with_content(s)
     .with_resource((&res).into())
-    .run();
-
-  // gen_syntax_highlight("toml", s, Some(&res), None)
-  //   .expect("Failed to get highlighted toml text");
+    .run()
 }
 
 #[ignore]
 #[test]
-fn test_output_to_file() {
+fn test_output_to_file() -> std::io::Result<()> {
   use std::fs::File;
 
   use hlight::{HighlightResource, Highlighter, theme::names::ayu_dark};
@@ -44,13 +40,10 @@ fn test_output_to_file() {
 
   let mut file = File::create("tmp.txt").expect("Failed to create test.txt");
 
-  let _ = Highlighter::default()
+  Highlighter::default()
     .with_syntax_name("toml")
     .with_content(s)
     .with_resource((&res).into())
     .with_writer(Some(&mut file))
-    .run();
-
-  // gen_syntax_highlight("toml", s, Some(&res), None)
-  //   .expect("Failed to get highlighted toml text");
+    .run()
 }
