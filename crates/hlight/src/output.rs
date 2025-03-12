@@ -8,7 +8,7 @@ use syntect::{
 };
 use tap::Pipe;
 
-use crate::{resource::HighLightRes, syntax::find_syntax};
+use crate::{resource::HighlightResource, syntax::find_syntax};
 
 #[derive(Getters, WithSetters)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
@@ -16,7 +16,7 @@ pub struct Highlighter<'a> {
   /// target syntax format (e.g., "json")
   syntax_name: &'a str,
   content: &'a str,
-  resource: Option<HighLightRes<'a>>,
+  resource: Option<&'a HighlightResource<'a>>,
   writer: Option<&'a mut dyn Write>,
 }
 
@@ -25,7 +25,7 @@ impl Default for Highlighter<'_> {
     Self {
       syntax_name: "markdown",
       content: "",
-      resource: Some(HighLightRes::default()),
+      resource: None, //Some(HighlightResource::default()),
       writer: None,
     }
   }
@@ -36,33 +36,35 @@ impl Highlighter<'_> {
   /// writer, using the selected syntax highlighting style to highlight the code
   /// beforehand.
   ///
-  /// # Example
+  /// ## Example
   ///
-  /// ```ignore
-  /// use hlight::HighLightRes;
+  /// ```no_run
+  /// use hlight::HighlightResource;
   /// use hlight::Highlighter;
   /// use std::fs::File;
   ///
   /// let s = "
-  /// [main]
-  /// enabled = false
-  /// float = 314e-2
+  ///   [main]
+  ///   enabled = false
+  ///   float = 314e-2
   /// ";
   ///
-  /// let res = HighLightRes::default().with_background(false);
-  /// let mut file = File::create("test.txt").expect("Failed to create test.txt");
+  /// let res = HighlightResource::default().with_background(false);
+  /// let mut file = File::create("tmp.txt")?;
   ///
   /// Highlighter::default()
   ///   .with_syntax_name("toml")
   ///   .with_content(s)
-  ///   .with_resource(res.into())
+  ///   .with_resource(Some(&res))
   ///   .with_writer(Some(&mut file))
-  ///   .run();
+  ///   .run()?;
+  ///
+  /// # Ok::<(), std::io::Error>(())
   /// ```
   pub fn run(self) -> io::Result<()> {
     let Self {
       syntax_name,
-      content: contents,
+      content,
       resource: style,
       writer,
     } = self;
@@ -86,7 +88,7 @@ impl Highlighter<'_> {
         s
       }
       _ => {
-        out.write_all(contents.as_bytes())?;
+        out.write_all(content.as_bytes())?;
         return out.flush();
       }
     };
@@ -97,17 +99,11 @@ impl Highlighter<'_> {
     let syntax = find_syntax(syntax_set, syntax_name);
 
     log::trace!("ext: {:?}", syntax.file_extensions);
-    log::debug!("syntax:{}", syntax.name);
+    log::debug!("syntax: {}", syntax.name);
 
-    let lines = HighlightLines::new(syntax, hl_res.get_theme_or_init_once());
+    let lines = HighlightLines::new(syntax, hl_res.get_or_init_theme());
 
-    write_highlight_line(
-      contents,
-      lines,
-      syntax_set,
-      *hl_res.get_background(),
-      out,
-    )?;
+    write_highlight_line(content, lines, syntax_set, *hl_res.get_background(), out)?;
     out.flush()?;
 
     log::debug!("Output complete");
@@ -125,21 +121,21 @@ impl Highlighter<'_> {
 ///
 /// Finally, it writes the escaped 24-bit terminal format to the output.
 fn write_highlight_line(
-  contents: &str,
+  content: &str,
   mut highlight_lines: HighlightLines,
   syntax_set: &SyntaxSet,
   background: bool,
-  out: &mut dyn Write,
+  writer: &mut dyn Write,
 ) -> io::Result<()> {
-  for line in LinesWithEndings::from(contents) {
+  for line in LinesWithEndings::from(content) {
     let ranges = highlight_lines
       .highlight_line(line, syntax_set)
       .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e.to_string()))?;
 
     let escaped = as_24_bit_terminal_escaped(&ranges[..], background);
-    out.write_all(escaped.as_bytes())?
+    writer.write_all(escaped.as_bytes())?
   }
-  out.write_all(b"\x1B[0m")?;
+  writer.write_all(b"\x1B[0m")?;
   Ok(())
 }
 
@@ -156,10 +152,10 @@ mod tests {
 
   #[test]
   fn print_highlighted_text() -> io::Result<()> {
-    let res = HighLightRes::default();
+    let res = HighlightResource::default();
     Highlighter::default()
       .with_syntax_name("toml")
-      .with_resource(res.into())
+      .with_resource((&res).into())
       .with_content(S)
       .run()?;
     Ok(())
@@ -171,13 +167,13 @@ mod tests {
   fn write_to_file() -> io::Result<()> {
     use std::fs::File;
 
-    let res = HighLightRes::default().with_background(false);
+    let res = HighlightResource::default().with_background(false);
     let mut file = File::create("/tmp/test.txt")?;
 
     Highlighter::default()
       .with_syntax_name("toml")
       .with_content(S)
-      .with_resource(res.into())
+      .with_resource((&res).into())
       .with_writer(Some(&mut file))
       .run()?;
     Ok(())
@@ -206,10 +202,10 @@ mod tests {
         "`nInvoke-Expression '$file'" >> $profile
         "#;
 
-    let res = HighLightRes::default().with_background(false);
+    let res = HighlightResource::default().with_background(false);
     Highlighter::default()
       .with_content(s)
-      .with_resource(res.into())
+      .with_resource(Some(&res))
       .with_syntax_name("pwsh")
       .run()?;
     // gen_syntax_highlight("pwsh", s, Some(&res), None)
@@ -238,11 +234,11 @@ mod tests {
             _arguments "${_arguments_options[@]}" \
         "#;
 
-    let res = HighLightRes::default().with_background(true);
+    let res = HighlightResource::default().with_background(true);
     Highlighter::default()
       .with_syntax_name("sh")
       .with_content(s)
-      .with_resource(res.into())
+      .with_resource((&res).into())
       .run()?;
     Ok(())
   }

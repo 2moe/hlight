@@ -14,6 +14,7 @@ fn build_and_open_rust_doc() -> io::Result<()> {
   ] {
     CargoDoc::default()
       .with_pkg(pkg)
+      .with_enable_private_items(false)
       .run()?
   }
   Ok(())

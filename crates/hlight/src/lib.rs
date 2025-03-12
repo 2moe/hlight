@@ -12,4 +12,4 @@ mod resource;
 pub mod syntax;
 pub mod theme;
 
-pub use crate::{output::Highlighter, resource::HighLightRes};
+pub use crate::{output::Highlighter, resource::HighlightResource};

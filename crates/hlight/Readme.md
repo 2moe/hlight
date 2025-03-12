@@ -17,7 +17,7 @@ cargo add hlight
 ### print to stdout
 
 ```rust
-use hlight::{Highlighter, theme::names::ayu_dark, HighLightRes};
+use hlight::{Highlighter, theme::names::ayu_dark, HighlightResource};
 
 
 let s: &str = r#"
@@ -27,14 +27,14 @@ enabled = false
 float = nan
 "#;
 
-let res = HighLightRes::default()
+let res = HighlightResource::default()
   .with_background(false)
   .with_theme_name(ayu_dark());
 
 let _ = Highlighter::default()
   .with_syntax_name("toml")
   .with_content(s)
-  .with_resource(res.into())
+  .with_resource(Some(&res))
   .run();
 ```
 
@@ -47,7 +47,7 @@ output:
 ```rust
 use std::fs::File;
 
-use hlight::{Highlighter, HighLightRes, theme::names::ayu_dark};
+use hlight::{Highlighter, HighlightResource, theme::names::ayu_dark};
 
 let s: &str = r#"
 [main]
@@ -56,7 +56,7 @@ enabled = false
 float = nan
 "#;
 
-let res = HighLightRes::default()
+let res = HighlightResource::default()
   .with_background(false)
   .with_theme_name(ayu_dark());
 
@@ -65,7 +65,7 @@ let mut file = File::create("tmp.txt").expect("Failed to create test.txt");
 let _ = Highlighter::default()
   .with_syntax_name("toml")
   .with_content(s)
-  .with_resource(res.into())
+  .with_resource(Some(&res))
   .with_writer(Some(&mut file))
   .run();
 ```
@@ -87,7 +87,7 @@ cargo add hlight --no-default-features
 ```rust
 use hlight::{
     theme::{load_theme_set, ThemeSet},
-    HighLightRes,
+    HighlightResource,
 };
 use std::borrow::Cow;
 
@@ -99,7 +99,7 @@ const THEMES: &[u8] = include_bytes!(concat!(
 fn main() {
     let set = load_theme_set(Some(THEMES));
 
-    let res = HighLightRes::default().with_theme_set(&set).with_theme_name("Custom-theme-name".into());
+    let res = HighlightResource::default().with_theme_set(&set).with_theme_name("Custom-theme-name".into());
 
     show_theme_set(res.get_theme_set())
 }
@@ -116,7 +116,7 @@ fn show_theme_set(set: &ThemeSet) {
 ```rust
 use hlight::{
     syntax::{load_syntax_set, SyntaxSet},
-    HighLightRes,
+    HighlightResource,
 };
 use std::sync::OnceLock;
 
@@ -131,7 +131,7 @@ fn static_syntax_set() -> &'static SyntaxSet {
 }
 
 fn main() {
-    let res = HighLightRes::default().with_syntax_set(static_syntax_set());
+    let res = HighlightResource::default().with_syntax_set(static_syntax_set());
     show_syntax_set(res.get_syntax_set())
 }
 

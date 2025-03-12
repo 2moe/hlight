@@ -1,7 +1,7 @@
 #[ignore]
 #[test]
 fn test_output() {
-  use hlight::{HighLightRes, Highlighter, theme::names::ayu_dark};
+  use hlight::{HighlightResource, Highlighter, theme::names::ayu_dark};
 
   let s: &str = r#"
   [main]
@@ -10,14 +10,14 @@ fn test_output() {
   float = nan
   "#;
 
-  let res = HighLightRes::default()
+  let res = HighlightResource::default()
     .with_background(false)
     .with_theme_name(ayu_dark());
 
   let _ = Highlighter::default()
     .with_syntax_name("toml")
     .with_content(s)
-    .with_resource(res.into())
+    .with_resource((&res).into())
     .run();
 
   // gen_syntax_highlight("toml", s, Some(&res), None)
@@ -29,7 +29,7 @@ fn test_output() {
 fn test_output_to_file() {
   use std::fs::File;
 
-  use hlight::{HighLightRes, Highlighter, theme::names::ayu_dark};
+  use hlight::{HighlightResource, Highlighter, theme::names::ayu_dark};
 
   let s: &str = r#"
   [main]
@@ -38,7 +38,7 @@ fn test_output_to_file() {
   float = nan
   "#;
 
-  let res = HighLightRes::default()
+  let res = HighlightResource::default()
     .with_background(false)
     .with_theme_name(ayu_dark());
 
@@ -47,7 +47,7 @@ fn test_output_to_file() {
   let _ = Highlighter::default()
     .with_syntax_name("toml")
     .with_content(s)
-    .with_resource(res.into())
+    .with_resource((&res).into())
     .with_writer(Some(&mut file))
     .run();
 

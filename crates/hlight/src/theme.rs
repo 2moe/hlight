@@ -5,7 +5,7 @@ pub use syntect::{
   highlighting::{Theme, ThemeSet},
 };
 
-use crate::resource::HighLightRes;
+use crate::resource::HighlightResource;
 
 #[cfg(feature = "preset-theme-set")]
 const THEME_SET: &[u8] = include_bytes!(concat!(
@@ -67,9 +67,9 @@ pub fn load_theme_set(set: Option<&[u8]>) -> ThemeSet {
   }
 }
 
-impl HighLightRes<'_> {
+impl HighlightResource<'_> {
   /// Gets the theme or initialize it if it is not already set.
-  pub fn get_theme_or_init_once(&self) -> &Theme {
+  pub fn get_or_init_theme(&self) -> &Theme {
     self
       .get_theme()
       .get_or_init(|| {
@@ -84,9 +84,9 @@ impl HighLightRes<'_> {
   /// # Example
   ///
   /// ```
-  /// use hlight::HighLightRes;
+  /// use hlight::HighlightResource;
   ///
-  /// let set = HighLightRes::static_theme_set();
+  /// let set = HighlightResource::static_theme_set();
   /// let themes = &set.themes;
   ///
   /// for t in themes.keys() {
@@ -106,7 +106,7 @@ mod tests {
   #[test]
   #[ignore]
   fn get_theme_set() {
-    let themes = &HighLightRes::static_theme_set().themes;
+    let themes = &HighlightResource::static_theme_set().themes;
     for t in themes.keys() {
       println!("{t}")
     }

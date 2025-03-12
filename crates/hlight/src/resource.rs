@@ -8,44 +8,45 @@ use syntect::{
 
 use crate::theme::{self, names::CmString};
 
-/// HighLight Resource
+/// Highlight Resource
 ///
 /// ## Create new instance
 ///
 /// ```
-/// use hlight::HighLightRes;
+/// use hlight::HighlightResource;
 /// use hlight::theme::names::monokai;
 ///
-/// let res = HighLightRes::default();
+/// let res = HighlightResource::default();
 /// assert_eq!(res.get_theme_name(), monokai());
 /// ```
 ///
 /// ## Enable or disable background
 ///
 /// ```
-/// use hlight::HighLightRes;
+/// use hlight::HighlightResource;
 ///
-/// let res = HighLightRes::default().with_background(false);
+/// let res = HighlightResource::default().with_background(false);
 /// assert!(!res.get_background())
 /// ```
 #[derive(Getters, WithSetters, Debug, Clone)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
-pub struct HighLightRes<'theme> {
+pub struct HighlightResource<'theme> {
   theme_name: CmString,
   #[getset(get = "pub(crate)")]
+  /// - get or init: [Self::get_or_init_theme]
   theme: OnceLock<Theme>,
   theme_set: &'theme ThemeSet,
   syntax_set: &'theme SyntaxSet,
   background: bool,
 }
 
-impl<'a> HighLightRes<'a> {
-  /// Creates a new instance of HighLightRes
+impl<'a> HighlightResource<'a> {
+  /// Creates a new instance of HighlightResource
   ///
   /// ### Example
   ///
   /// ```no_run
-  /// use hlight::HighLightRes;
+  /// use hlight::HighlightResource;
   /// use hlight::theme::load_theme_set;
   /// use std::borrow::Cow;
   ///
@@ -55,7 +56,7 @@ impl<'a> HighLightRes<'a> {
   /// ));
   ///
   /// let set = load_theme_set(Some(THEMES));
-  /// let res = HighLightRes::new("ayu-dark", &set);
+  /// let res = HighlightResource::new("ayu-dark", &set);
   /// ```
   pub fn new(name: &str, theme_set: &'a ThemeSet) -> Self {
     Self {
@@ -67,7 +68,7 @@ impl<'a> HighLightRes<'a> {
   }
 }
 
-impl Default for HighLightRes<'_> {
+impl Default for HighlightResource<'_> {
   fn default() -> Self {
     Self {
       theme_name: theme::names::monokai(),
@@ -86,8 +87,8 @@ mod tests {
 
   #[test]
   #[ignore]
-  /// Create two different HighLightRes instances, then initialize the name
-  /// field (via `.get_theme_or_init_once()`) to see if there is any impact
+  /// Create two different HighlightResource instances, then initialize the name
+  /// field (via `.get_or_init_theme()`) to see if there is any impact
   /// between the two structure instances.
   ///
   /// Note: The test result is no.
@@ -96,7 +97,7 @@ mod tests {
       ($res:expr, $expected:expr) => {
         assert_eq!(
           &$res
-            .get_theme_or_init_once()
+            .get_or_init_theme()
             .name
             .as_deref(),
           &Some($expected)
@@ -104,10 +105,10 @@ mod tests {
       };
     }
 
-    let res = HighLightRes::default();
+    let res = HighlightResource::default();
     assert_theme_name!(res, names::monokai().as_str());
 
-    let res2 = HighLightRes::default().with_theme_name(names::ayu_dark());
+    let res2 = HighlightResource::default().with_theme_name(names::ayu_dark());
     assert_theme_name!(res2, "ayu");
   }
 }

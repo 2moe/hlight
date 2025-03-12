@@ -4,7 +4,7 @@ use std::sync::OnceLock;
 use syntect::dumps;
 pub use syntect::parsing::{SyntaxReference, SyntaxSet};
 
-use crate::{resource::HighLightRes, theme::READ_DUMP_DATA_ERR};
+use crate::{resource::HighlightResource, theme::READ_DUMP_DATA_ERR};
 
 #[cfg(feature = "preset-syntax-set")]
 const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
@@ -40,15 +40,15 @@ pub fn load_syntax_set(set: Option<&[u8]>) -> SyntaxSet {
   }
 }
 
-impl HighLightRes<'_> {
+impl HighlightResource<'_> {
   /// This is the default syntax set.
   ///
   /// # Example
   ///
   /// ```
-  /// use hlight::HighLightRes;
+  /// use hlight::HighlightResource;
   ///
-  /// let set = HighLightRes::static_syntax_set();
+  /// let set = HighlightResource::static_syntax_set();
   ///
   /// set.syntaxes()
   ///     .iter()
@@ -116,9 +116,9 @@ pub fn find_syntax<'a>(
 /// # Example
 ///
 /// ```
-/// use hlight::{syntax::find_syntax_name, HighLightRes};
+/// use hlight::{syntax::find_syntax_name, HighlightResource};
 ///
-/// let set = HighLightRes::static_syntax_set();
+/// let set = HighlightResource::static_syntax_set();
 /// let syntax = find_syntax_name(set, "Markdown");
 /// ```
 pub fn find_syntax_name<'a>(set: &'a SyntaxSet, name: &str) -> &'a SyntaxReference {
@@ -133,12 +133,12 @@ pub fn find_syntax_name<'a>(set: &'a SyntaxSet, name: &str) -> &'a SyntaxReferen
 
 #[cfg(test)]
 mod tests {
-  use crate::HighLightRes;
+  use crate::HighlightResource;
 
   #[test]
   #[ignore]
   fn iter_static_set() {
-    let set = HighLightRes::static_syntax_set();
+    let set = HighlightResource::static_syntax_set();
 
     set
       .syntaxes()

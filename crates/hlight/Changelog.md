@@ -1,5 +1,26 @@
 # ChangeLog
 
+## 0.0.6
+
+Breaking changes:
+
+- `HighLightRes` -> `HighlightResource`
+- `get_theme_or_init_once()` -> `get_or_init_theme()`
+- `Highlighter.resource::default()`: `Some(_)` -> `None`
+- change the `Highlighter.resource` type from `Option<_>` to `Option<&_>`
+
+Previous:
+
+```rust
+  resource: Option<HighlightResource<'a>>,
+```
+
+Now:
+
+```rust
+  resource: Option<&'a HighlightResource<'a>>,
+```
+
 ## 0.0.5
 
 Breaking changes:
@@ -14,7 +35,7 @@ Breaking changes:
 ## 0.0.3
 
 - remove `match_static_syntax()`
-- "HighLightRes::syntax_set": `'static` -> `'theme`
+- `HighLightRes::syntax_set`: `'static` -> `'theme`
 
 ## 0.0.2
 
