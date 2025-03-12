@@ -31,12 +31,15 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(__unstable_doc)'] }
 version = "5.2"
 default-features = false
 
+[workspace.dependencies.hlight-assets]
+path = "crates/hlight-assets"
+version = "0.0.0"
+
 [workspace.dependencies]
 getset = "0.1"
 log = "0.4"
 tap = "1.0"
 compact_str = "0.9"
-hlight-assets = { path = "crates/hlight-assets" }
 # --------------
 [package]
 name = "tests"
