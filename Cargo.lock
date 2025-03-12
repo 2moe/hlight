@@ -303,10 +303,15 @@ version = "0.0.7"
 dependencies = [
  "compact_str",
  "getset",
+ "hlight-assets",
  "log",
  "syntect",
  "tap",
 ]
+
+[[package]]
+name = "hlight-assets"
+version = "0.0.0"
 
 [[package]]
 name = "hlight-dump"

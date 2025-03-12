@@ -45,17 +45,10 @@ impl<'a> HighlightResource<'a> {
   ///
   /// ### Example
   ///
-  /// ```no_run
+  /// ```
   /// use hlight::HighlightResource;
-  /// use hlight::theme::load_theme_set;
-  /// use std::borrow::Cow;
   ///
-  /// const THEMES: &[u8] = include_bytes!(concat!(
-  ///     env!("CARGO_MANIFEST_DIR"),
-  ///     "/assets/set/theme.packdump"
-  /// ));
-  ///
-  /// let set = load_theme_set(Some(THEMES));
+  /// let set = HighlightResource::static_theme_set();
   /// let res = HighlightResource::new("ayu-dark", &set);
   /// ```
   pub fn new(name: &str, theme_set: &'a ThemeSet) -> Self {

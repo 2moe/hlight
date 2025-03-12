@@ -1,0 +1,25 @@
+[package]
+name = "hlight-assets"
+version = "0.0.0"
+rust-version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = """
+Provides preset syntax and theme sets for hlight.
+"""
+
+[features]
+default = []
+syntax-set = []
+theme-set = []
+
+[dependencies]
+
+[package.metadata.docs.rs]
+all-features = false
+rustdoc-args = ["--cfg", "__unstable_doc"]
+
+[lints]
+workspace = true

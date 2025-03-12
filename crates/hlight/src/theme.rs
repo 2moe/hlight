@@ -7,12 +7,6 @@ pub use syntect::{
 
 use crate::resource::HighlightResource;
 
-#[cfg(feature = "preset-theme-set")]
-const THEME_SET: &[u8] = include_bytes!(concat!(
-  env!("CARGO_MANIFEST_DIR"),
-  "/assets/set/theme.packdump"
-));
-
 pub const READ_DUMP_DATA_ERR: &str = "Failed to read dump data";
 
 /// Some theme names included in the "preset-theme-set".
@@ -45,7 +39,7 @@ pub mod names {
 ///
 /// # Example
 ///
-/// ```no_run
+/// ```ignore
 /// use hlight::theme::load_theme_set;
 ///
 /// const THEMES: &[u8] = include_bytes!(concat!(
@@ -61,7 +55,8 @@ pub fn load_theme_set(set: Option<&[u8]>) -> ThemeSet {
   match set {
     Some(x) => dumps::from_uncompressed_data(x).expect(msg),
     #[cfg(feature = "preset-theme-set")]
-    _ => dumps::from_uncompressed_data(set.unwrap_or(THEME_SET)).expect(msg),
+    _ => dumps::from_uncompressed_data(set.unwrap_or(hlight_assets::THEME_SET))
+      .expect(msg),
     #[allow(unreachable_patterns)]
     _ => ThemeSet::default(),
   }

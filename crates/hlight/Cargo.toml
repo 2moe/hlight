@@ -14,14 +14,15 @@ description = "This library is dedicated to delivering exceptional syntax highli
 
 [features]
 default = ["preset-syntax-set", "preset-theme-set"]
-preset-syntax-set = []
-preset-theme-set = []
+preset-syntax-set = ["hlight-assets/syntax-set"]
+preset-theme-set = ["hlight-assets/theme-set"]
 
 [dependencies]
 getset.workspace = true
 log.workspace = true
 tap.workspace = true
 compact_str.workspace = true
+hlight-assets = { workspace = true, optional = true }
 
 [dependencies.syntect]
 # version = "5.2"

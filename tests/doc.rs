@@ -9,8 +9,9 @@ use testutils::os_cmd::{RunnableCommand, presets::CargoDoc};
 #[test]
 fn build_and_open_rust_doc() -> io::Result<()> {
   for pkg in [
-    "hlight",
+    // "hlight",
     // "hlight-dump",
+    "hlight-assets",
   ] {
     CargoDoc::default()
       .with_pkg(pkg)

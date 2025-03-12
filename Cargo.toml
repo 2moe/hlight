@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hlight", "crates/hlight-dump"]
+members = ["crates/hlight", "crates/hlight-assets", "crates/hlight-dump"]
 resolver = "3"
 
 [profile.release]
@@ -36,6 +36,7 @@ getset = "0.1"
 log = "0.4"
 tap = "1.0"
 compact_str = "0.9"
+hlight-assets = { path = "crates/hlight-assets" }
 # --------------
 [package]
 name = "tests"

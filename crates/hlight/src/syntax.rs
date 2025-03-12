@@ -1,16 +1,9 @@
 use std::sync::OnceLock;
 
-#[cfg(feature = "preset-syntax-set")]
 use syntect::dumps;
 pub use syntect::parsing::{SyntaxReference, SyntaxSet};
 
 use crate::{resource::HighlightResource, theme::READ_DUMP_DATA_ERR};
-
-#[cfg(feature = "preset-syntax-set")]
-const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
-  env!("CARGO_MANIFEST_DIR"),
-  "/assets/set/syntax.packdump"
-));
 
 /// Loads a set of syntaxes.
 ///
@@ -18,7 +11,7 @@ const SUBLIME_SYNTAXES: &[u8] = include_bytes!(concat!(
 ///
 /// # Example
 ///
-/// ```no_run
+/// ```ignore
 /// use hlight::syntax::load_syntax_set;
 ///
 /// const SYNTAXES: &[u8] = include_bytes!(concat!(
@@ -34,7 +27,10 @@ pub fn load_syntax_set(set: Option<&[u8]>) -> SyntaxSet {
   match set {
     Some(x) => dumps::from_uncompressed_data(x).expect(msg),
     #[cfg(feature = "preset-syntax-set")]
-    _ => dumps::from_uncompressed_data(set.unwrap_or(SUBLIME_SYNTAXES)).expect(msg),
+    _ => {
+      dumps::from_uncompressed_data(set.unwrap_or(hlight_assets::SUBLIME_SYNTAXES))
+        .expect(msg)
+    }
     #[allow(unreachable_patterns)]
     _ => SyntaxSet::default(),
   }
