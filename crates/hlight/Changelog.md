@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 0.0.8
+
+Separate the theme-set and syntax-set into an individual crate: hlight-assets.
+
 ## 0.0.7
 
 - change the type of `HighlightResource.theme`
