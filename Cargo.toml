@@ -40,6 +40,7 @@ getset = "0.1"
 log = "0.4"
 tap = "1.0"
 compact_str = "0.9"
+ansi_colours = "1.2"
 # --------------
 [package]
 name = "tests"
@@ -51,8 +52,12 @@ tap.workspace = true
 itertools = "0.14"
 # cargo_metadata = "0.19"
 hlight = { path = "./crates/hlight" }
-anyhow = "1.0.97"
-[dev-dependencies.testutils]
-version = "0.0.4"
+anyhow = "1.0"
+rayon = "1.10"
+syntect.workspace = true
+testutils = "0.0.5"
+thread_local = "1.1"
+
+[dependencies]
 # path = "../testutils"
 # --------------

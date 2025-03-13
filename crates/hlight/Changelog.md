@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 0.0.10
+
+- add `to_ansi_256color()`
+- add a `true_color` field to the `Highlighter` struct.
+  - When set to `false`, outputs highlighted text in 256-color mode instead of 24-bit true color.
+
 ## 0.0.9
 
 - chore(static-set): OnceLock => LazyLock

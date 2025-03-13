@@ -2,13 +2,13 @@ use std::io::{self, BufWriter, Write};
 
 use getset::{Getters, WithSetters};
 use syntect::{
-  easy::HighlightLines,
-  parsing::SyntaxSet,
-  util::{LinesWithEndings, as_24_bit_terminal_escaped},
+  easy::HighlightLines, parsing::SyntaxSet, util::as_24_bit_terminal_escaped,
 };
 use tap::Pipe;
 
-use crate::{resource::HighlightResource, syntax::find_syntax};
+use crate::{
+  color_escape::to_ansi_256color, resource::HighlightResource, syntax::find_syntax,
+};
 
 #[derive(Getters, WithSetters)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
@@ -18,6 +18,7 @@ pub struct Highlighter<'a, 'w> {
   content: &'a str,
   resource: Option<&'a HighlightResource<'a>>,
   writer: Option<&'w mut dyn Write>,
+  true_color: bool,
 }
 
 impl Default for Highlighter<'_, '_> {
@@ -27,6 +28,7 @@ impl Default for Highlighter<'_, '_> {
       content: "",
       resource: None, //Some(HighlightResource::default()),
       writer: None,
+      true_color: true,
     }
   }
 }
@@ -65,8 +67,9 @@ impl Highlighter<'_, '_> {
     let Self {
       syntax_name,
       content,
-      resource: style,
+      resource,
       writer,
+      true_color,
     } = self;
 
     let mut stdout = std::io::stdout().pipe(BufWriter::new);
@@ -79,7 +82,7 @@ impl Highlighter<'_, '_> {
       _ => &mut stdout as &mut dyn Write,
     };
 
-    let hl_res = match style {
+    let hl_res = match resource {
       Some(s)
         if !s
           .get_theme_name()
@@ -101,9 +104,18 @@ impl Highlighter<'_, '_> {
     log::trace!("ext: {:?}", syntax.file_extensions);
     log::debug!("syntax: {}", syntax.name);
 
-    let lines = HighlightLines::new(syntax, hl_res.get_or_init_theme());
+    // let lines = HighlightLines::new(syntax, hl_res.get_or_init_theme());
 
-    write_highlight_line(content, lines, syntax_set, *hl_res.get_background(), out)?;
+    HighlightConfig::default()
+      .with_background(*hl_res.get_background())
+      .with_content(content)
+      .with_syntax_set(Some(syntax_set))
+      .with_true_color(true_color)
+      .with_highlight_lines(
+        HighlightLines::new(syntax, hl_res.get_or_init_theme()).into(),
+      )
+      .write_lines(out)?;
+
     out.flush()?;
 
     log::debug!("Output complete");
@@ -111,32 +123,65 @@ impl Highlighter<'_, '_> {
   }
 }
 
-/// Performs the actual highlighting of lines of code, and writes the
-/// highlighted output to the specified output stream.
-///
-/// The function loops through each line of the `contents` parameter, uses the
-/// `highlight_line` method to highlight each line, and gets the escaped 24-bit
-/// terminal format of the highlighted ranges using the
-/// `as_24_bit_terminal_escaped` function.
-///
-/// Finally, it writes the escaped 24-bit terminal format to the output.
-fn write_highlight_line(
-  content: &str,
-  mut highlight_lines: HighlightLines,
-  syntax_set: &SyntaxSet,
+#[derive(Getters, WithSetters, Default)]
+#[getset(get = "with_prefix", set_with)]
+struct HighlightConfig<'a> {
+  content: &'a str,
+  highlight_lines: Option<HighlightLines<'a>>,
+  syntax_set: Option<&'a SyntaxSet>,
   background: bool,
-  writer: &mut dyn Write,
-) -> io::Result<()> {
-  for line in LinesWithEndings::from(content) {
-    let ranges = highlight_lines
-      .highlight_line(line, syntax_set)
-      .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e.to_string()))?;
+  true_color: bool,
+}
 
-    let escaped = as_24_bit_terminal_escaped(&ranges[..], background);
-    writer.write_all(escaped.as_bytes())?
+impl HighlightConfig<'_> {
+  /// Performs the actual highlighting of lines of code, and writes the
+  /// highlighted output to the specified output stream.
+  fn write_lines(self, writer: &mut dyn Write) -> io::Result<()> {
+    let Self {
+      content,
+      highlight_lines,
+      syntax_set,
+      background,
+      true_color,
+    } = self;
+
+    let invalid_data_err = |e| io::Error::new(io::ErrorKind::InvalidData, e);
+
+    let escaped_err = |e| {
+      format!("Failed to escape text with ANSI-256-color.\n Error: {e}")
+        .pipe(invalid_data_err)
+    };
+
+    let opt_err = || {
+      "Failed to unwrap Some(data)"
+        .to_owned()
+        .pipe(invalid_data_err)
+    };
+
+    let mut highlight_lines = highlight_lines.ok_or_else(opt_err)?;
+    let syntax_set = syntax_set.ok_or_else(opt_err)?;
+
+    content
+      .split_inclusive('\n')
+      .try_for_each(|line| {
+        let ranges = highlight_lines
+          .highlight_line(line, syntax_set)
+          .map_err(|e| {
+            e.to_string()
+              .pipe(invalid_data_err)
+          })?;
+
+        let write_all = |data| writer.write_all(data);
+
+        match true_color {
+          true => as_24_bit_terminal_escaped(&ranges, background),
+          _ => to_ansi_256color(&ranges, background).map_err(escaped_err)?,
+        }
+        .as_bytes()
+        .pipe(write_all)
+      })?;
+    writer.write_all(b"\x1B[0m")
   }
-  writer.write_all(b"\x1B[0m")?;
-  Ok(())
 }
 
 #[cfg(test)]
@@ -152,11 +197,14 @@ mod tests {
 
   #[test]
   fn print_highlighted_text() -> io::Result<()> {
-    let res = HighlightResource::default();
+    let res = HighlightResource::default() //
+      .with_background(false);
+
     Highlighter::default()
       .with_syntax_name("toml")
       .with_resource((&res).into())
       .with_content(S)
+      .with_true_color(false)
       .run()?;
     Ok(())
   }

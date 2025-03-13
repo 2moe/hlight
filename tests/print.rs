@@ -1,23 +1,39 @@
+use testutils::simple_benchmark;
+
 #[test]
+#[ignore]
 fn test_output() -> std::io::Result<()> {
   use hlight::{HighlightResource, Highlighter, theme::names::ayu_dark};
 
-  let s: &str = r#"
+  let s = r#"
   [main]
   enabled = false
   "😎" = "🍥"
   float = nan
-  "#;
+
+  data = """
+    a = 3
+    b = 4
+    c = true
+  """
+  "#
+  .repeat(10);
 
   let res = HighlightResource::default()
-    .with_background(false)
+    .with_background(true)
     .with_theme_name(ayu_dark());
 
   Highlighter::default()
     .with_syntax_name("toml")
-    .with_content(s)
+    .with_content(&s)
     .with_resource((&res).into())
     .run()
+}
+
+#[ignore]
+#[test]
+fn bench_test_output() {
+  simple_benchmark(test_output);
 }
 
 #[ignore]

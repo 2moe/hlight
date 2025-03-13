@@ -1,6 +1,6 @@
 [package]
 name = "hlight"
-version = "0.0.9"
+version = "0.0.10"
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
@@ -23,6 +23,7 @@ log.workspace = true
 tap.workspace = true
 compact_str.workspace = true
 hlight-assets = { workspace = true, optional = true }
+ansi_colours.workspace = true
 
 [dependencies.syntect]
 # version = "5.2"
