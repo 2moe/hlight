@@ -12,15 +12,15 @@ use crate::{resource::HighlightResource, syntax::find_syntax};
 
 #[derive(Getters, WithSetters)]
 #[getset(get = "pub with_prefix", set_with = "pub")]
-pub struct Highlighter<'a> {
+pub struct Highlighter<'a, 'w> {
   /// target syntax format (e.g., "json")
   syntax_name: &'a str,
   content: &'a str,
   resource: Option<&'a HighlightResource<'a>>,
-  writer: Option<&'a mut dyn Write>,
+  writer: Option<&'w mut dyn Write>,
 }
 
-impl Default for Highlighter<'_> {
+impl Default for Highlighter<'_, '_> {
   fn default() -> Self {
     Self {
       syntax_name: "markdown",
@@ -31,7 +31,7 @@ impl Default for Highlighter<'_> {
   }
 }
 
-impl Highlighter<'_> {
+impl Highlighter<'_, '_> {
   /// Prints syntax-highlighted code to either standard output or a provided
   /// writer, using the selected syntax highlighting style to highlight the code
   /// beforehand.

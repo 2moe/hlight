@@ -1,9 +1,28 @@
 # ChangeLog
 
-## 0.0.9 (Upcoming)
+## 0.0.9
 
 - chore(static-set): OnceLock => LazyLock
 - `HighlightResource::new()`: `name: &str` => `name: impl Into<CmString>`
+- fix `Highlighter.writer`: lifetime => `'w`
+
+Previous:
+
+```rust
+pub struct Highlighter<'a> {
+  writer: Option<&'a mut dyn Write>,
+  ...
+}
+```
+
+Now:
+
+```rust
+pub struct Highlighter<'a, 'w> {
+  writer: Option<&'w mut dyn Write>,
+  ...
+}
+```
 
 ## 0.0.8
 

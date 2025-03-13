@@ -74,7 +74,7 @@ let _ = Highlighter::default()
 
 ### Load custom set
 
-> The `["preset-syntax-set", "preset-theme-set"]` features are enabled by default. If you want to customize the set, you don't need to load these features.
+> The `["preset-syntax-set", "preset-theme-set"]` features are enabled by default. If you want to customize the set, you don't need to enable these features.
 
 disable default features:
 
