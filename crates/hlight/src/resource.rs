@@ -1,12 +1,9 @@
-use std::sync::OnceLock;
+use std::{borrow::Cow, sync::OnceLock};
 
 use getset::{Getters, WithSetters};
-use syntect::{
-  highlighting::{Theme, ThemeSet},
-  parsing::SyntaxSet,
-};
+use syntect::{highlighting::Theme, parsing::SyntaxSet};
 
-use crate::theme::{self, names::CmString};
+use crate::theme::{self, HlightThemeSet, names::CmString};
 
 /// Highlight Resource
 ///
@@ -34,31 +31,10 @@ pub struct HighlightResource<'theme> {
   theme_name: CmString,
   #[getset(get = "pub(crate)")]
   /// - get or init: [Self::get_or_init_theme]
-  theme: OnceLock<&'theme Theme>,
-  theme_set: &'theme ThemeSet,
-  syntax_set: &'theme SyntaxSet,
+  theme: OnceLock<Theme>,
+  theme_set: HlightThemeSet<'theme>,
+  syntax_set: Cow<'theme, SyntaxSet>, //&'theme SyntaxSet,
   background: bool,
-}
-
-impl<'a> HighlightResource<'a> {
-  /// Creates a new instance of HighlightResource
-  ///
-  /// ### Example
-  ///
-  /// ```
-  /// use hlight::HighlightResource;
-  ///
-  /// let set = HighlightResource::static_theme_set();
-  /// let res = HighlightResource::new("ayu-dark", &set);
-  /// ```
-  pub fn new<S: Into<CmString>>(name: S, theme_set: &'a ThemeSet) -> Self {
-    Self {
-      theme_name: name.into(),
-      theme_set,
-      syntax_set: Self::static_syntax_set(),
-      ..Default::default()
-    }
-  }
 }
 
 impl Default for HighlightResource<'_> {
@@ -66,8 +42,8 @@ impl Default for HighlightResource<'_> {
     Self {
       theme_name: theme::names::monokai(),
       theme: OnceLock::new(),
-      syntax_set: Self::static_syntax_set(),
-      theme_set: Self::static_theme_set(),
+      syntax_set: Cow::Borrowed(Self::static_syntax_set()),
+      theme_set: Self::static_theme_set().into(),
       background: true,
     }
   }

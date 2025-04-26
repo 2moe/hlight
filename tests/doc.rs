@@ -15,9 +15,9 @@ fn build_and_open_rust_doc() -> io::Result<()> {
   };
 
   [
-    // "hlight",
+    "hlight",
     // "hlight-dump",
-    "hlight-assets",
+    // "hlight-assets",
   ]
   .into_iter()
   .map(new_doc)

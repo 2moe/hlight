@@ -1,5 +1,12 @@
 # ChangeLog
 
+## 0.0.11
+
+- remove `HighlightResource::new()`
+- `HighlightResource::theme_set`: `&'theme ThemeSet` => `HlightThemeSet<'theme>`
+- `HighlightResource::syntax_set`: `&'theme SyntaxSet` => `Cow<'theme, SyntaxSet>`
+- `Highlighter`: +`prefer_syntax_ext`
+
 ## 0.0.10
 
 - add `to_ansi_256color()`

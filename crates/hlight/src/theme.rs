@@ -1,4 +1,4 @@
-use std::sync::LazyLock;
+use std::sync::{Arc, LazyLock};
 
 pub use syntect::{
   dumps,
@@ -6,6 +6,33 @@ pub use syntect::{
 };
 
 use crate::resource::HighlightResource;
+
+#[derive(Debug, Clone)]
+pub enum HlightThemeSet<'set> {
+  Ref(&'set ThemeSet),
+  Arc(Arc<ThemeSet>),
+}
+
+impl From<ThemeSet> for HlightThemeSet<'_> {
+  fn from(value: ThemeSet) -> Self {
+    Self::Arc(Arc::new(value))
+  }
+}
+
+impl<'set> From<&'set ThemeSet> for HlightThemeSet<'set> {
+  fn from(value: &'set ThemeSet) -> Self {
+    Self::Ref(value)
+  }
+}
+
+impl HlightThemeSet<'_> {
+  pub fn get_inner(&self) -> &ThemeSet {
+    match self {
+      Self::Ref(theme_set) => theme_set,
+      Self::Arc(theme_set) => theme_set,
+    }
+  }
+}
 
 pub const READ_DUMP_DATA_ERR: &str = "Failed to read dump data";
 
@@ -69,11 +96,14 @@ impl HighlightResource<'_> {
       .get_theme()
       .get_or_init(|| {
         let name = self.get_theme_name().as_str();
-        let set = self.get_theme_set();
-        &set.themes[name]
+        use HlightThemeSet::*;
+        match self.get_theme_set() {
+          Arc(set) => &set.themes[name],
+          Ref(set) => &set.themes[name],
+        }
+        .clone()
       })
   }
-
   /// This is the default theme set.
   ///
   /// # Example
@@ -105,5 +135,33 @@ mod tests {
     for t in themes.keys() {
       println!("{t}")
     }
+  }
+
+  #[ignore]
+  #[test]
+  fn test_load_custom_theme() {
+    use crate::{HighlightResource, theme::load_theme_set};
+
+    const THEMES: &[u8] = include_bytes!(concat!(
+      env!("CARGO_MANIFEST_DIR"),
+      "/../hlight-assets",
+      "/assets/set/theme.packdump"
+    ));
+
+    fn show_theme_set(set: &HlightThemeSet) {
+      set
+        .get_inner()
+        .themes
+        .keys()
+        .for_each(|k| println!("{k}"))
+    }
+
+    let set = load_theme_set(Some(THEMES));
+
+    let res = HighlightResource::default()
+      .with_theme_set(set.into())
+      .with_theme_name("Custom-theme-name".into());
+
+    show_theme_set(res.get_theme_set())
   }
 }

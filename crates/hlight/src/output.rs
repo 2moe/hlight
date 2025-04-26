@@ -7,7 +7,9 @@ use syntect::{
 use tap::Pipe;
 
 use crate::{
-  color_escape::to_ansi_256color, resource::HighlightResource, syntax::find_syntax,
+  color_escape::to_ansi_256color,
+  resource::HighlightResource,
+  syntax::{find_syntax, find_syntax_name},
 };
 
 #[derive(Getters, WithSetters)]
@@ -15,6 +17,9 @@ use crate::{
 pub struct Highlighter<'a, 'w> {
   /// target syntax format (e.g., "json")
   syntax_name: &'a str,
+  /// - true => syntax = set.find_syntax(syntax_name)
+  /// - _ => syntax = set.find_syntax_name(syntax_name)
+  prefer_syntax_ext: bool,
   content: &'a str,
   resource: Option<&'a HighlightResource<'a>>,
   writer: Option<&'w mut dyn Write>,
@@ -25,6 +30,7 @@ impl Default for Highlighter<'_, '_> {
   fn default() -> Self {
     Self {
       syntax_name: "markdown",
+      prefer_syntax_ext: true,
       content: "",
       resource: None, //Some(HighlightResource::default()),
       writer: None,
@@ -66,6 +72,7 @@ impl Highlighter<'_, '_> {
   pub fn run(self) -> io::Result<()> {
     let Self {
       syntax_name,
+      prefer_syntax_ext,
       content,
       resource,
       writer,
@@ -99,7 +106,10 @@ impl Highlighter<'_, '_> {
 
     log::debug!("About to Load the SyntaxSet and ThemeSet");
 
-    let syntax = find_syntax(syntax_set, syntax_name);
+    let syntax = match prefer_syntax_ext {
+      true => find_syntax(syntax_set, syntax_name),
+      _ => find_syntax_name(syntax_set, syntax_name),
+    };
 
     log::trace!("ext: {:?}", syntax.file_extensions);
     log::debug!("syntax: {}", syntax.name);

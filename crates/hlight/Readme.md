@@ -85,66 +85,65 @@ cargo add hlight --no-default-features
 #### theme-set
 
 ```rust
-use hlight::{
-    theme::{load_theme_set, ThemeSet},
-    HighlightResource,
-};
-use std::borrow::Cow;
+use hlight::{HighlightResource, theme::load_theme_set};
 
 const THEMES: &[u8] = include_bytes!(concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/assets/set/theme.packdump"
+  env!("CARGO_MANIFEST_DIR"),
+  "/assets/set/theme.packdump"
 ));
 
-fn main() {
-    let set = load_theme_set(Some(THEMES));
-
-    let res = HighlightResource::default().with_theme_set(&set).with_theme_name("Custom-theme-name".into());
-
-    show_theme_set(res.get_theme_set())
+fn show_theme_set(set: &HlightThemeSet) {
+  set
+    .get_inner()
+    .themes
+    .keys()
+    .for_each(|k| println!("{k}"))
 }
 
-fn show_theme_set(set: &ThemeSet) {
-    for k in set.themes.keys() {
-        println!("{k}")
-    }
-}
+let set = load_theme_set(Some(THEMES));
+
+let res = HighlightResource::default()
+  .with_theme_set(set.into())
+  .with_theme_name("Custom-theme-name".into());
+
+show_theme_set(res.get_theme_set())
 ```
 
 #### syntax-set
 
 ```rust
-use hlight::{
-    syntax::{load_syntax_set, SyntaxSet},
-    HighlightResource,
-};
 use std::sync::OnceLock;
 
+use hlight::{
+  HighlightResource,
+  syntax::{SyntaxSet, load_syntax_set},
+};
+
 const SYNTAXES: &[u8] = include_bytes!(concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/assets/set/syntax.packdump"
+  env!("CARGO_MANIFEST_DIR"),
+  "/assets/set/syntax.packdump"
 ));
 
 fn static_syntax_set() -> &'static SyntaxSet {
-    static S: OnceLock<SyntaxSet> = OnceLock::new();
-    S.get_or_init(|| load_syntax_set(Some(SYNTAXES)))
-}
-
-fn main() {
-    let res = HighlightResource::default().with_syntax_set(static_syntax_set());
-    show_syntax_set(res.get_syntax_set())
+  static S: OnceLock<SyntaxSet> = OnceLock::new();
+  S.get_or_init(|| load_syntax_set(Some(SYNTAXES)))
 }
 
 fn show_syntax_set(set: &SyntaxSet) {
-    for (name, ext) in set
-        .syntaxes()
-        .iter()
-        .map(|x| (&x.name, &x.file_extensions))
-    {
-        println!(
-            "name: {name}\n\
-            ext: {ext:?}\n---"
-        )
-    }
+  for (name, ext) in set
+    .syntaxes()
+    .iter()
+    .map(|x| (&x.name, &x.file_extensions))
+  {
+    println!(
+      "name: {name}\n\
+      ext: {ext:?}\n---"
+    )
+  }
 }
+
+let res = HighlightResource::default()
+  .with_syntax_set(Cow::Borrowed(static_syntax_set()));
+
+show_syntax_set(res.get_syntax_set())
 ```
